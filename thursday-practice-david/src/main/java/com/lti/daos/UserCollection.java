@@ -8,7 +8,11 @@ import com.lti.models.User;
 
 public class UserCollection implements UserDao{
 
-	private ArrayList<User> uc = new ArrayList<>();
+	private static ArrayList<User> uc;
+	
+	public UserCollection() {
+		uc = new ArrayList<>();
+	}
 	
 	
 	@Override

@@ -42,12 +42,13 @@ public class MenuScreen {
 				input = sc.next();
 				userAdding.setPassword(input);
 				
+				/*
 				try {
 					us.addUser(userAdding);
 				} catch(UserExistsException e){
 					System.out.println("User already exists");
 				}
-				
+				*/
 				try {
 					System.out.println(us.getUser(userAdding.getUsername()));
 				} catch (UserNotFoundException e1) {
@@ -82,11 +83,13 @@ public class MenuScreen {
 				sc.nextLine();
 				break;
 			default:
-				System.out.println("not an option");
+				//System.out.println("not an option");
 				break;
 			}
 
 		} while (!choice.equals("exit"));
+		
+		sc.close();
 
 	}
 
