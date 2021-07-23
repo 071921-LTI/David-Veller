@@ -1,10 +1,12 @@
 package com.lti;
 
+import com.lti.controllers.MenuScreen;
+
 public class Driver {
 	
 	public static void main(String[] args) {
 		
-		//TODO: call menu
+		MenuScreen.menu();
 		
 	}
 
