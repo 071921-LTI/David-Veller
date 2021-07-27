@@ -2,6 +2,7 @@ package com.lti.controllers;
 
 import java.util.Scanner;
 
+import com.lti.exceptions.ItemHasOffer;
 import com.lti.exceptions.LoginFail;
 import com.lti.exceptions.SearchFailed;
 import com.lti.models.Item;
@@ -64,6 +65,7 @@ public class Menu {
 					break;
 				} else if (userInput.equals("4")) {
 					System.out.println("Have a nice day!");
+					scan.close();
 					return;
 				} else {
 					System.out.println("Please enter a valid option");
@@ -72,69 +74,110 @@ public class Menu {
 
 			clearScreen();
 
-			Shop shop = new Shop();
+			if (user == null || user.getRole() == 'c') {
+				customerMenu(scan, user);
+			} else if (user.getRole() == 'e') {
+				employeeMenu(scan, user);
+			}
 
-			while (true) {
-				System.out.println("Please enter an item ID");
+			scan.close();
+		}
+
+	}
+
+	private static void employeeMenu(Scanner scan, User user) {
+		//TODO EMPLOYEE MENU
+	}
+
+	private static void customerMenu(Scanner scan, User user) {
+		Shop shop = new Shop();
+		String userInput;
+
+		while (true) {
+			System.out.println("Type '1' to view all items, '2' to view owned items, or '3' to logout");
+			userInput = scan.nextLine();
+
+			if (userInput.equals("2")) {
 				dispTop();
+				//make these owned items
 				dispItems(shop);
 				dispBottom();
+				System.out.println("Press enter to view previous menu");
+				scan.nextLine();
+			} else if (userInput.equals("1")) {
+				break;
+			} else if (userInput.equals("3")) {
+				return;
+			}else {
+				System.out.println("Please enter a valid input");
+			}
+		}
 
-				Item item;
+		while (true) {
+			System.out.println("Please enter an item ID");
+			dispTop();
+			dispItems(shop);
+			dispBottom();
 
-				while (true) {
-					userInput = scan.nextLine();
-					try {
-						item = shop.getItem(Integer.parseInt(userInput));
-						break;
-					} catch (NumberFormatException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (SearchFailed e) {
-						System.out.println("Please enter a valid item ID");
-					}
-				}
+			Item item;
 
-				clearScreen();
-				dispTop();
-				System.out.println(formatItem(item));
-
-				if (user == null) {
-					System.out.println("You need to be logged in to make an offer. Press enter to view item list.");
-					userInput = scan.nextLine();
-					continue;
-				}
-
-				System.out.println("Would you like to make an offer? y/n");
-
-				while (true) {
-					userInput = scan.nextLine();
-					if (userInput.equals("y")) {
-						shop.makeOffer(item.getId(), user.getId());
-						break;
-					} else if (userInput.equals("n")) {
-						System.out.println("You will be returned to the item list");
-						break;
-					} else {
-						System.out.println("Please enter y/n");
-					}
-
-				}
-
-				System.out.println(
-						"Type 'logout' to be returned to the main menu. Otherwise type 'items' to view the item list");
+			while (true) {
 				userInput = scan.nextLine();
-				if (userInput.equals("items")) {
-					continue;
-				} else if (userInput.equals("logout")) {
+				try {
+					item = shop.getItem(Integer.parseInt(userInput));
+					break;
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SearchFailed e) {
+					System.out.println("Please enter a valid item ID");
+				}
+			}
+
+			clearScreen();
+			dispTop();
+			System.out.println(formatItem(item));
+
+			if (user == null) {
+				System.out.println("You need to be logged in to make an offer. Press enter to view item list.");
+				userInput = scan.nextLine();
+				continue;
+			}
+
+			System.out.println("Would you like to make an offer? y/n");
+
+			while (true) {
+				userInput = scan.nextLine();
+				if (userInput.equals("y")) {
+					try {
+						System.out.println("Please enter offer amount");
+						userInput = scan.nextLine();
+						float amount = Float.parseFloat(userInput);
+						shop.makeOffer(item.getId(), user.getId(), amount);
+					} catch (ItemHasOffer e) {
+						System.out.println("Sorry, an offer for this item has already been accepted");
+					}
+					break;
+				} else if (userInput.equals("n")) {
+					System.out.println("You will be returned to the item list");
 					break;
 				} else {
-					System.out.println("Please type a valid input");
+					System.out.println("Please enter y/n");
 				}
 
 			}
 
-			scan.close();
+			System.out.println(
+					"Type 'logout' to be returned to the main menu. Otherwise type 'items' to view the item list");
+			userInput = scan.nextLine();
+			if (userInput.equals("items")) {
+				continue;
+			} else if (userInput.equals("logout")) {
+				break;
+			} else {
+				System.out.println("Please type a valid input");
+			}
+
 		}
 
 	}
