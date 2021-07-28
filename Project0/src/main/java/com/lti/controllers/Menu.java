@@ -87,6 +87,17 @@ public class Menu {
 
 	private static void employeeMenu(Scanner scan, User user) {
 		//TODO EMPLOYEE MENU
+		Shop shop = new Shop();
+		String userInput;
+		
+		System.out.println("These are your items");
+		dispTop();
+		//make these owned items
+		dispItems(shop);
+		dispBottom();
+		
+		System.out.println("Type an item id to view pending offers on the item\n");
+		
 	}
 
 	private static void customerMenu(Scanner scan, User user) {
