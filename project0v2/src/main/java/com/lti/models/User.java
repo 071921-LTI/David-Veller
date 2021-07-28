@@ -5,8 +5,8 @@ import java.io.Serializable;
 public class User implements Serializable{
 	
 	private int id;
-	private String user;
-	private String pass;
+	private String user; //must be unique
+	private String pass; //must be greater than 5 chars
 	private String role; //customer, employee, or manager
 	
 	
