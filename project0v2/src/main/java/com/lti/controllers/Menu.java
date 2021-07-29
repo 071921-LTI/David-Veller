@@ -7,6 +7,7 @@ import java.util.Scanner;
 import com.lti.exceptions.AuthException;
 import com.lti.exceptions.UserNotFoundException;
 import com.lti.models.User;
+import com.lti.services.Shop;
 import com.lti.services.UserServiceImpl;
 
 public class Menu {
@@ -20,7 +21,28 @@ public class Menu {
 		user = loginMenu(scan, user);
 
 		System.out.println(user);
+		
+		if(user.getRole().equals("customer")) {
+			customerMenu(scan, user);
+		}else if(user.getRole().equals("employee")) {
+			employeeMenu(scan, user);
+		}
 
+	}
+
+	private static void employeeMenu(Scanner scan, User user) {
+		String userInput;
+		Shop shop = new Shop();
+		
+		while(true) {
+			System.out.println("Here are the items in your shop. ");
+		}
+		
+	}
+
+	private static void customerMenu(Scanner scan, User user) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private static User loginMenu(Scanner scan, User user) {

@@ -43,8 +43,9 @@ public class Item {
 	public float getRemainingValue() {
 		return remainingValue;
 	}
-	public void setRemainingValue(float remainingValue) {
+	public float setRemainingValue(float remainingValue) {
 		this.remainingValue = remainingValue;
+		return remainingValue;
 	}
 	public Item(int id, String name, int sellerId, int ownerId, float value, float remainingValue) {
 		super();
