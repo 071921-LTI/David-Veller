@@ -56,4 +56,27 @@ public class UserPostgres implements UserDao {
 		return id;
 	}
 
+	@Override
+	public User getUserById(int userId) throws IOException, SQLException {
+		String sql = "select * from users where user_id = ?;";
+		User user = null;
+
+		Connection con = ConnectionUtil.getConnectionFromFile();
+
+		PreparedStatement ps = con.prepareStatement(sql);
+		ps.setInt(1, userId);
+
+		ResultSet rs = ps.executeQuery();
+		
+		if (rs.next()) {
+			String username = rs.getString("user_user");
+			String pass = rs.getString("user_pass");
+			String role = rs.getString("user_role");
+			
+			user = new User(userId, username, pass, role);
+		}
+
+		return user;
+	}
+
 }
