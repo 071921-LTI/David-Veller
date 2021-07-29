@@ -2,12 +2,17 @@ package com.lti.controllers;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
 
 import com.lti.exceptions.AuthException;
+import com.lti.exceptions.NoOffersException;
 import com.lti.exceptions.UserNotFoundException;
+import com.lti.models.Item;
+import com.lti.models.Offer;
 import com.lti.models.User;
 import com.lti.services.Shop;
+import com.lti.services.UserService;
 import com.lti.services.UserServiceImpl;
 
 public class Menu {
@@ -19,12 +24,15 @@ public class Menu {
 		User user = null;
 
 		user = loginMenu(scan, user);
+		if (user == null) {
+			return;
+		}
 
 		System.out.println(user);
-		
-		if(user.getRole().equals("customer")) {
+
+		if (user.getRole().equals("customer")) {
 			customerMenu(scan, user);
-		}else if(user.getRole().equals("employee")) {
+		} else if (user.getRole().equals("employee")) {
 			employeeMenu(scan, user);
 		}
 
@@ -33,28 +41,227 @@ public class Menu {
 	private static void employeeMenu(Scanner scan, User user) {
 		String userInput;
 		Shop shop = new Shop();
-		
-		while(true) {
-			System.out.println("Here are the items in your shop. ");
+		UserService us = new UserServiceImpl();
+
+		while (true) {
+
+			displayOwnedItems(user, shop, us);
+			System.out.println(
+					"Enter 'add' to add an item\n'delete' to delete an item\n'payments' to view payments\n'offers' to view offers\n'exit' to exit");
+			userInput = scan.nextLine();
+
+			if (userInput.equals("add")) {
+
+				try {
+					System.out.println("Please enter an item name: ");
+					String name = scan.nextLine();
+					System.out.println("Please enter a value for your item: ");
+					float value = Float.parseFloat(scan.nextLine());
+
+					Item item = new Item(0, name, user.getId(), user.getId(), value, value);
+					item.setId(shop.addItem(item));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("Your item has been added!");
+
+			} else if (userInput.equals("delete")) {
+				System.out.println("Please enter the item id that you would like to delete");
+				int id;
+				while (true) {
+					try {
+						id = Integer.parseInt(scan.nextLine());
+						break;
+					} catch (NumberFormatException e) {
+						System.out.println("Please enter a number");
+					}
+				}
+				try {
+					shop.deleteItem(new Item(id));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("Your item has been deleted!");
+
+			} else if (userInput.equals("payments")) {
+
+				dispTop();
+				try {
+					List<Item> items = shop.viewSoldItems(user);
+					for (Item i : items) {
+						formatItem(i, shop, us);
+					}
+				} catch (IOException e) {
+					System.out.println("Properties file not found");
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				dispBottom();
+				System.out.println("Press enter to go back to menu");
+				scan.nextLine();
+
+			} else if (userInput.equals("offers")) {
+
+				System.out.println("Please enter an item id");
+				int id;
+				while (true) {
+					try {
+						id = Integer.parseInt(scan.nextLine());
+						break;
+					} catch (NumberFormatException e) {
+						System.out.println("Please enter a number");
+					}
+				}
+				for (int i = 0; i < 55; i++) {
+					System.out.print('-');
+				}
+
+				System.out.print("\n");
+				try {
+					List<Offer> offers = shop.getOffers(id);
+					String s = String.format("|%-10.10s|%-15.15s|%-10.10s|%-15.15s|", "Offer ID", "Item", "Amount",
+							"Customer");
+					System.out.println(s);
+					for (int i = 0; i < 55; i++) {
+						System.out.print('-');
+					}
+					System.out.print("\n");
+					for (Offer o : offers) {
+						String off = String.format("|%-10.10d|%-15.15s|%-10.10f|%-15.15s|", o.getId(),
+								shop.getItem(new Item(o.getItemId())), o.getOfferAmount(),
+								us.getUsernameById(o.getCustomerId()));
+					}
+					System.out.println("Please enter an offer id that you would like to accept/reject");
+					int offerId;
+					while (true) {
+						try {
+							offerId = Integer.parseInt(scan.nextLine());
+							break;
+						} catch (NumberFormatException e) {
+							System.out.println("Please enter a number");
+						}
+					}
+					System.out.println("Type 'accept' to accept the offer or 'reject' to reject the offer");
+					while (true) {
+						userInput = scan.nextLine();
+						if (userInput.equals("accept")) {
+							shop.acceptOffer(new Offer(offerId));
+							System.out.println("The offer was accepted!");
+							break;
+						} else if (userInput.equals("reject")) {
+							shop.rejectOffer(new Offer(offerId));
+							System.out.println("Offer has been rejected!");
+							break;
+						} else {
+							System.out.println("Please enter a valid input");
+						}
+					}
+
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (AuthException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NoOffersException e1) {
+					System.out.println("This item has no offers\nPress enter to continue");
+					scan.nextLine();
+
+				}
+
+			} else if (userInput.equals("exit")) {
+				break;
+			}
+
 		}
-		
+
 	}
 
 	private static void customerMenu(Scanner scan, User user) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	private static void displayOwnedItems(User user, Shop shop, UserService us) {
+		dispTop();
+		try {
+			List<Item> items = shop.viewOwnedItems(user);
+			for (Item i : items) {
+				formatItem(i, shop, us);
+			}
+		} catch (IOException e) {
+			System.out.println("Properties file not found");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		dispBottom();
+	}
+
+	private static void dispTop() {
+		for (int i = 0; i < 82; i++) {
+			System.out.print('_');
+		}
+		System.out.println("\n");
+		String s = String.format("|%-10.10s|%-15.15s|%-15.15s|%-15.15s|%-10.10s|%-10.10s|", "Item ID", "Name", "Seller",
+				"Owner", "Value", "Remaining");
+		System.out.println(s);
+		for (int i = 0; i < 82; i++) {
+			System.out.print('-');
+		}
+		System.out.println("\n");
+	}
+
+	private static String formatItem(Item item, Shop shop, UserService us) {
+		String s = null;
+		try {
+			s = String.format("|%-10d|%-15.15s|%-15.15s|%-15.15s|%-10f|%-10f|", item.getId(), item.getName(),
+					us.getUsernameById(item.getSellerId()), us.getUsernameById(item.getOwnerId()), item.getValue(),
+					item.getRemainingValue());
+			System.out.println(s);
+		} catch (AuthException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return s;
+	}
+
+	private static void dispBottom() {
+		for (int i = 0; i < 82; i++) {
+			System.out.print('-');
+		}
+		System.out.println("\n");
 	}
 
 	private static User loginMenu(Scanner scan, User user) {
-		
+
 		String userInput;
-		UserServiceImpl us = new UserServiceImpl();
-		
+		UserService us = new UserServiceImpl();
+
 		while (true) {
 			System.out.println("Welcome to Not Ebay!");
 			System.out.println("Please type 'login', 'register', or 'exit'");
 			userInput = scan.nextLine();
-			
+
 			if (userInput.equals("login")) {
 				System.out.println("Please enter your username: ");
 				String username = scan.nextLine();

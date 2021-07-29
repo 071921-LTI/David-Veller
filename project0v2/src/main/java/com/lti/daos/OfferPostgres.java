@@ -16,7 +16,7 @@ public class OfferPostgres implements OfferDao{
 	@Override
 	public List<Offer> getOffers(int itemId) throws IOException, SQLException {
 		List<Offer> offers = new ArrayList<>();
-		String sql = "select * from offers where offer_on = ?;";
+		String sql = "select * from offers where offer_on = ? and offer_id is not null;";
 		
 		Connection con = ConnectionUtil.getConnectionFromFile();
 		PreparedStatement ps = con.prepareStatement(sql);

@@ -177,4 +177,30 @@ public class ItemPostgres implements ItemDao {
 		return item;
 	}
 
+	@Override
+	public List<Item> viewSoldItems(int sellerId) throws IOException, SQLException {
+		List<Item> items = new ArrayList<>();
+		String sql = "select * from items where item_seller = ? AND item_seller <> item_owner;";
+
+		Connection con = ConnectionUtil.getConnectionFromFile();
+		PreparedStatement ps = con.prepareStatement(sql);
+
+		ps.setInt(1, sellerId);
+		
+		ResultSet rs = ps.executeQuery();
+
+		while (rs.next()) {
+			int itemId = rs.getInt("item_id");
+			String name = rs.getString("item_name");
+			int ownerId = rs.getInt("item_owner");
+			float itemValue = rs.getFloat("item_value");
+			float itemRemainingValue = rs.getFloat("item_remaining_value");
+
+			Item item = new Item(itemId, name, sellerId, ownerId, itemValue, itemRemainingValue);
+			items.add(item);
+		}
+
+		return items;
+	}
+
 }

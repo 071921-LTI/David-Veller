@@ -8,6 +8,7 @@ import com.lti.daos.ItemDao;
 import com.lti.daos.ItemPostgres;
 import com.lti.daos.OfferDao;
 import com.lti.daos.OfferPostgres;
+import com.lti.exceptions.NoOffersException;
 import com.lti.exceptions.NotYourItemException;
 import com.lti.exceptions.PaymentException;
 import com.lti.models.Item;
@@ -120,6 +121,24 @@ public class Shop implements Shoppable {
 			id.updateRemainingValue(item.getId(), item.setRemainingValue(item.getRemainingValue()-amount));
 		}
 		return 0;
+	}
+
+	@Override
+	public List<Item> viewSoldItems(User user) throws IOException, SQLException {
+		ItemDao id = new ItemPostgres();
+		return id.viewSoldItems(user.getId());
+	}
+
+	@Override
+	public List<Offer> getOffers(int itemId) throws IOException, SQLException, NoOffersException {
+		OfferDao od = new OfferPostgres();
+		List<Offer> offers = od.getOffers(itemId);
+		if (offers.isEmpty()) {
+			throw new NoOffersException();
+		}
+
+		
+		return offers;
 	}
 
 }

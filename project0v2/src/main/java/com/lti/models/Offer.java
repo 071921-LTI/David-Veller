@@ -66,6 +66,11 @@ public class Offer {
 		this.itemId = itemId;
 		this.customerId = customerId;
 	}
+	
+	public Offer(int id) {
+		super();
+		this.id = id;
+	}
 	@Override
 	public String toString() {
 		return "Offer [id=" + id + ", offerAmount=" + offerAmount + ", itemId=" + itemId + ", customerId=" + customerId

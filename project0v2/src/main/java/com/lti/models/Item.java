@@ -57,6 +57,11 @@ public class Item {
 		this.remainingValue = remainingValue;
 	}
 	
+	public Item(int id) {
+		super();
+		this.id = id;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
