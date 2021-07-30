@@ -11,5 +11,6 @@ public interface OfferDao {
 	public abstract List<Offer> getOffers(int itemId) throws IOException, SQLException;
 	public abstract int newOffer(float offerAmount, int itemId, int customerId) throws IOException, SQLException;
 	public abstract int deleteOffer(int offerId) throws IOException, SQLException;
+	public abstract Offer getOffer(int offerId) throws IOException, SQLException;
 
 }

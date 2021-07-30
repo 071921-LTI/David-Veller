@@ -2,11 +2,13 @@ package com.lti.controllers;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 import com.lti.exceptions.AuthException;
 import com.lti.exceptions.NoOffersException;
+import com.lti.exceptions.PaymentException;
 import com.lti.exceptions.UserNotFoundException;
 import com.lti.models.Item;
 import com.lti.models.Offer;
@@ -128,6 +130,7 @@ public class Menu {
 				System.out.print("\n");
 				try {
 					List<Offer> offers = shop.getOffers(id);
+					List<Integer> offerIds = new ArrayList<>();
 					String s = String.format("|%-10.10s|%-15.15s|%-10.10s|%-15.15s|", "Offer ID", "Item", "Amount",
 							"Customer");
 					System.out.println(s);
@@ -136,10 +139,13 @@ public class Menu {
 					}
 					System.out.print("\n");
 					for (Offer o : offers) {
-						String off = String.format("|%-10.10d|%-15.15s|%-10.10f|%-15.15s|", o.getId(),
-								shop.getItem(new Item(o.getItemId())), o.getOfferAmount(),
+						String off = String.format("|%-10d|%-15.15s|%-10f|%-15.15s|", o.getId(),
+								shop.getItem(new Item(o.getItemId())).getName(), o.getOfferAmount(),
 								us.getUsernameById(o.getCustomerId()));
+						System.out.println(off);
+						offerIds.add(o.getId());
 					}
+				
 					System.out.println("Please enter an offer id that you would like to accept/reject");
 					int offerId;
 					while (true) {
@@ -150,6 +156,12 @@ public class Menu {
 							System.out.println("Please enter a number");
 						}
 					}
+					if(!offerIds.contains(offerId)) {
+						System.out.println("That offer does not exist");
+						break;
+					}
+				
+				
 					System.out.println("Type 'accept' to accept the offer or 'reject' to reject the offer");
 					while (true) {
 						userInput = scan.nextLine();
@@ -190,8 +202,119 @@ public class Menu {
 	}
 
 	private static void customerMenu(Scanner scan, User user) {
-		// TODO Auto-generated method stub
+		String userInput;
+		Shop shop = new Shop();
+		UserService us = new UserServiceImpl();
 
+		while (true) {
+			displayAllItems(shop, us);
+
+			System.out.println("Please enter 'offer' to choose an item\n'owned' to view owned items\n'exit' to exit");
+
+			userInput = scan.nextLine();
+
+			if (userInput.equals("offer")) {
+				while (true) {
+					System.out.println("Please enter an item ID");
+					int itemId;
+					while (true) {
+						try {
+							itemId = Integer.parseInt(scan.nextLine());
+							break;
+						} catch (NumberFormatException e) {
+							System.out.println("Please enter a number");
+						}
+					}
+
+					System.out.println("Please enter and offer amount");
+					int offerAmount;
+					while (true) {
+						try {
+							offerAmount = Integer.parseInt(scan.nextLine());
+							break;
+						} catch (NumberFormatException e) {
+							System.out.println("Please enter a number");
+						}
+					}
+					try {
+						shop.makeOffer(new Item(itemId), user, offerAmount);
+						break;
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SQLException e) {
+						System.out.println("Item was not found");
+					}
+				}
+				System.out.println("You have made an offer!");
+
+			} else if (userInput.equals("owned")) {
+
+				displayOwnedItems(user, shop, us);
+				System.out.println("Enter the item id for which to view remaining payments");
+				int itemId;
+				while (true) {
+					try {
+						itemId = Integer.parseInt(scan.nextLine());
+						break;
+					} catch (NumberFormatException e) {
+						System.out.println("Please enter a number");
+					}
+				}
+				System.out.println("Please enter the number of weeks you would like to take to repay the item");
+				int weeks;
+				while (true) {
+					while (true) {
+						try {
+							weeks = Integer.parseInt(scan.nextLine());
+							break;
+						} catch (NumberFormatException e) {
+							System.out.println("Please enter a number");
+						}
+					}
+					try {
+						Float weeklyAmount = shop.calcWeeklyPayment(weeks, new Item(itemId));
+						if (!shop.isItemOwned(user.getId(), itemId)) {
+							System.out.println("You do not own this item");
+							break;
+						}
+						System.out.println("Your weekly payment is " + weeklyAmount.toString());
+						break;
+					} catch (PaymentException e) {
+						System.out.println("Please enter a valid number of weeks");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+			} else if (userInput.equals("exit")) {
+				System.out.println("Have a nice day!");
+				return;
+			} else {
+				System.out.println("Please enter a valid input");
+			}
+		}
+
+	}
+
+	private static void displayAllItems(Shop shop, UserService us) {
+		dispTop();
+		try {
+			List<Item> items = shop.viewAllItems();
+			for (Item i : items) {
+				formatItem(i, shop, us);
+			}
+		} catch (IOException e) {
+			System.out.println("Properties file not found");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		dispBottom();
 	}
 
 	private static void displayOwnedItems(User user, Shop shop, UserService us) {

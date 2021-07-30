@@ -73,4 +73,27 @@ public class OfferPostgres implements OfferDao{
 		return rowsChanged;
 	}
 
+	@Override
+	public Offer getOffer(int offerId) throws IOException, SQLException {
+		Offer offer = null;
+		String sql = "select * from offers where offer_id = ?;";
+		
+		Connection con = ConnectionUtil.getConnectionFromFile();
+		PreparedStatement ps = con.prepareStatement(sql);
+		
+		ps.setInt(1, offerId);
+		
+		ResultSet rs = ps.executeQuery();
+		
+		if(rs.next()) {
+			int itemId = rs.getInt("offer_on");
+			float offerAmount = rs.getFloat("offer_amount");
+			int customerId = rs.getInt("offer_from");
+			
+			offer = new Offer(offerId, offerAmount, itemId, customerId);
+		}
+		
+		return offer;
+	}
+
 }

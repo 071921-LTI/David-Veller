@@ -66,7 +66,10 @@ public class Shop implements Shoppable {
 	}
 
 	@Override
-	public float calcWeeklyPayment(int weeks, Item item) throws PaymentException {
+	public float calcWeeklyPayment(int weeks, Item item) throws PaymentException, IOException, SQLException {
+		ItemDao id = new ItemPostgres();
+		item = id.getItemById(item.getId());
+		
 		if (weeks <= 0) {
 			throw new PaymentException();
 		} else {
@@ -89,6 +92,8 @@ public class Shop implements Shoppable {
 		//can maybe make this a transaction?
 		//is this efficient?
 		//dao.begin
+		offer = od.getOffer(offer.getId());
+		
 		id.updateOwner(offer.getItemId(), offer.getCustomerId());
 		id.updateValue(offer.getItemId(), offer.getOfferAmount());
 		id.updateRemainingValue(offer.getItemId(), offer.getOfferAmount());
@@ -139,6 +144,17 @@ public class Shop implements Shoppable {
 
 		
 		return offers;
+	}
+
+	@Override
+	public boolean isItemOwned(int userId, int itemId) throws IOException, SQLException {
+		ItemDao id = new ItemPostgres();
+		
+		if (id.getItemById(itemId) == null) {
+			return false;
+		}
+		
+		return id.getItemById(itemId).getOwnerId() == userId;
 	}
 
 }
