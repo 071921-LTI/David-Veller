@@ -112,5 +112,94 @@ public class UserServiceTest {
 		}
 		assertThrows(AuthException.class, () -> us.login("david", "wrongpassword"));
 	}
-
+	
+	@Test
+	public void registerCustomer() {
+		try {
+			Mockito.when(ud.addUser("david", "password", "customer")).thenReturn(1);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			assertEquals(new User(1, "david", "password", "customer"), us.registerCustomer("david", "password"));
+		} catch (AuthException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Test
+	public void registerCustomerExists() {
+		try {
+			Mockito.when(ud.addUser("david", "password", "customer")).thenThrow(SQLException.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertThrows(SQLException.class, () -> us.registerCustomer("david", "password"));
+	}
+	
+	@Test
+	public void registerCustomerShortpass() {
+		assertThrows(AuthException.class, () -> us.registerCustomer("david", "pass"));
+	}
+	
+	@Test
+	public void registerEmployee() {
+		try {
+			Mockito.when(ud.addUser("david", "password", "employee")).thenReturn(1);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			assertEquals(new User(1, "david", "password", "employee"), us.registerEmployee("david", "password"));
+		} catch (AuthException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Test
+	public void registerEmployeeExists() {
+		try {
+			Mockito.when(ud.addUser("david", "password", "employee")).thenThrow(SQLException.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertThrows(SQLException.class, () -> us.registerEmployee("david", "password"));
+	}
+	
+	@Test
+	public void registerEmployeeShortpass() {
+		assertThrows(AuthException.class, () -> us.registerEmployee("david", "pass"));
+	}
 }
