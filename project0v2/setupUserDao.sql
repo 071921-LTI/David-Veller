@@ -10,4 +10,4 @@ create table if not exists users(
 );
 
 
-insert into users (user_user, user_pass, user_role) values ('david', 'helloworld', 'customer')
+insert into users (user_user, user_pass, user_role) values ('david', 'helloworld', 'customer');

@@ -10,11 +10,12 @@ import com.lti.exceptions.UserNotFoundException;
 import com.lti.models.User;
 
 public class UserServiceImpl implements UserService{
+	
+	UserDao ud = new UserPostgres();
 
 	@Override
 	public User login(String username, String password) throws IOException, SQLException, AuthException, UserNotFoundException {
 		// TODO Auto-generated method stub
-		UserDao ud = new UserPostgres();
 		User user = ud.getUserByUsername(username);
 		
 		if (user == null) {
@@ -30,7 +31,6 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public User registerCustomer(String username, String password) throws AuthException, IOException, SQLException {
-		UserDao ud = new UserPostgres();
 		if (password.length() <= 5) {
 			throw new AuthException();
 		}
@@ -44,7 +44,6 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public User registerEmployee(String username, String password) throws AuthException, IOException, SQLException {
-		UserDao ud = new UserPostgres();
 		if (password.length() <= 5) {
 			throw new AuthException();
 		}
@@ -58,7 +57,6 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public String getUsernameById(int id) throws AuthException, IOException, SQLException {
-		UserDao ud = new UserPostgres();
 		
 		return ud.getUserById(id).getUser();
 	}

@@ -23,87 +23,30 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.lti.models.Item;
 import com.lti.util.ConnectionUtil;
 
+import net.bytebuddy.agent.builder.AgentBuilder.Identified;
+
 @ExtendWith(MockitoExtension.class)
-public class UserDaoTest {
+public class OfferDaoTest {
 	
-	private UserDao ud = new UserPostgres();
+	private OfferDao od = new OfferPostgres();
 	
+
 	private static MockedStatic<ConnectionUtil> mockedConnectionUtil;
 	private static Connection connection;
 	
 	
-	@Test
-	public void getUserByIdExists() {
-		try {
-			assertNotNull(ud.getUserById(1));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	@Test
-	public void getUserByIdNotExists() {
-		try {
-			assertNull(ud.getUserById(2));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	@Test
-	public void getUserByUsernameExists() {
-		try {
-			assertNotNull(ud.getUserByUsername("david"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	@Test
-	public void getUserByUsernameNotExists() {
-		try {
-			assertNull(ud.getUserByUsername("test"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	@Test
-	public void addNewDuplicateUser() {
-		assertThrows(SQLException.class, () -> ud.addUser("david", "hello123", "customer"));
-	}
-	
-	@Test
-	public void addNewUserShortPass() {
-		assertThrows(SQLException.class, () -> ud.addUser("newuser", "he", "customer"));
-	}
-	
 	/*
 	@Test
-	public void addNewUser() {
-		int expected = 2;
-		int actualResult = 0;
+	public void newOffer() {
+		int expected = 4;
+		int actual = 0;
 		
+
 		try {
-			actualResult = ud.addUser("newuseasdasdsasr", "hello123", "customer");
+			actual = id.newOffer(30, 2, 2);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -111,11 +54,102 @@ public class UserDaoTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		assertEquals(expected, actualResult);
+		
+		assertEquals(expected, actual);
 	}
 	*/
 	
+	@Test
+	public void getOffersExists() {
+		int expected = 2;
+		int actual = 0;
+		try {
+			actual = od.getOffers(1).size();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		assertEquals(expected, actual);
+	}
 	
+	@Test
+	public void getOffersNotExists() {
+		int expected = 0;
+		int actual = -1;
+		try {
+			actual = od.getOffers(3).size();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void deleteOfferExist() {
+		int expected = 1;
+		int actual = 0;
+		try {
+			actual = od.deleteOffer(2);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void deleteOfferNotExist() {
+		int expected = 0;
+		int actual = -1;
+		try {
+			actual = od.deleteOffer(5);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void getOfferExists() {
+		try {
+			assertNotNull(od.getOffer(1));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void getOfferNotExists() {
+		try {
+			assertNull(od.getOffer(5));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	
 	public static Connection getH2Connection() {
@@ -151,7 +185,7 @@ public class UserDaoTest {
 	@BeforeEach
 	public void setUp() {
 		try (Connection c = ConnectionUtil.getConnectionFromFile()) {
-			RunScript.execute(c, new FileReader("setupUserDao.sql"));
+			RunScript.execute(c, new FileReader("setupOfferDao.sql"));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
@@ -165,7 +199,7 @@ public class UserDaoTest {
 	@AfterEach
 	public void tearDown() {
 		try (Connection c = ConnectionUtil.getConnectionFromFile()) {
-			RunScript.execute(c, new FileReader("teardownUserDao.sql"));
+			RunScript.execute(c, new FileReader("teardownOfferDao.sql"));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
@@ -177,3 +211,5 @@ public class UserDaoTest {
 	}
 
 }
+
+

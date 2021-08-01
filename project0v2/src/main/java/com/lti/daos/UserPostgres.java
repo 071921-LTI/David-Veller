@@ -36,16 +36,19 @@ public class UserPostgres implements UserDao {
 
 	@Override
 	public int addUser(String username, String password, String role) throws IOException, SQLException {
-		String sql = "insert into users (user_user, user_pass, user_role) values (?, ?, ?) returning user_id;";
+		String sql = "insert into users (user_user, user_pass, user_role) values (?, ?, ?) returning user_id";
 		int id = -1;
 		
 		Connection con = ConnectionUtil.getConnectionFromFile();
+		
 		
 		PreparedStatement ps = con.prepareStatement(sql);
 		
 		ps.setString(1,  username);
 		ps.setString(2,  password);
 		ps.setString(3, role);
+		
+		
 		
 		ResultSet rs = ps.executeQuery();
 		
