@@ -17,7 +17,6 @@ import com.lti.exceptions.UserNotFoundException;
 import com.lti.models.Item;
 import com.lti.models.Offer;
 import com.lti.models.User;
-import com.lti.services.HashPass;
 import com.lti.services.Shop;
 import com.lti.services.UserService;
 import com.lti.services.UserServiceImpl;
@@ -45,8 +44,27 @@ public class Menu {
 			customerMenu(scan, user);
 		} else if (user.getRole().equals("employee")) {
 			employeeMenu(scan, user);
+		} else if(user.getRole().equals("manager")) {
+			managerMenu(scan, user);
 		}
 
+	}
+
+	private static void managerMenu(Scanner scan, User user) {
+		String userInput;
+		UserService us = UserServiceImpl.getUserService();
+		
+		while(true) {
+			displayEmployees(us);
+		}
+	}
+
+	private static void displayEmployees(UserService us) {
+		for(int i = 0; i < 23;i++) {
+			System.out.print('_');
+		}
+		System.out.println(String.format("|%-10d|%-10.10s|", "Employee ID", "Employee Name"));
+		
 	}
 
 	private static void employeeMenu(Scanner scan, User user) {

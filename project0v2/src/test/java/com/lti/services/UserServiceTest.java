@@ -23,6 +23,8 @@ import com.lti.models.User;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
+	String hashedPass = HashPass.getHasher().hashPass("password");
+	
 	@Mock
 	private UserDao ud;
 
@@ -33,7 +35,7 @@ public class UserServiceTest {
 	public void getUsernameById() {
 
 		try {
-			Mockito.when(ud.getUserById(1)).thenReturn(new User(1, "david", "password", "customer"));
+			Mockito.when(ud.getUserById(1)).thenReturn(new User(1, "david", hashedPass, "customer"));
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -60,7 +62,7 @@ public class UserServiceTest {
 	@Test
 	public void login() {
 		try {
-			Mockito.when(ud.getUserByUsername("david")).thenReturn(new User(1, "david", "password", "customer"));
+			Mockito.when(ud.getUserByUsername("david")).thenReturn(new User(1, "david", hashedPass, "customer"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -69,7 +71,7 @@ public class UserServiceTest {
 			e.printStackTrace();
 		}
 		try {
-			assertEquals(new User(1, "david", "password", "customer"), us.login("david", "password"));
+			assertEquals(new User(1, "david", hashedPass, "customer"), us.login("david", "password"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -102,7 +104,7 @@ public class UserServiceTest {
 	@Test
 	public void loginWrongPass() {
 		try {
-			Mockito.when(ud.getUserByUsername("david")).thenReturn(new User(1, "david", "password", "customer"));
+			Mockito.when(ud.getUserByUsername("david")).thenReturn(new User(1, "david", hashedPass, "customer"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -116,7 +118,7 @@ public class UserServiceTest {
 	@Test
 	public void registerCustomer() {
 		try {
-			Mockito.when(ud.addUser("david", "password", "customer")).thenReturn(1);
+			Mockito.when(ud.addUser("david", hashedPass, "customer")).thenReturn(1);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -125,7 +127,7 @@ public class UserServiceTest {
 			e.printStackTrace();
 		}
 		try {
-			assertEquals(new User(1, "david", "password", "customer"), us.registerCustomer("david", "password"));
+			assertEquals(new User(1, "david", hashedPass, "customer"), us.registerCustomer("david", "password"));
 		} catch (AuthException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -142,7 +144,7 @@ public class UserServiceTest {
 	@Test
 	public void registerCustomerExists() {
 		try {
-			Mockito.when(ud.addUser("david", "password", "customer")).thenThrow(SQLException.class);
+			Mockito.when(ud.addUser("david",hashedPass, "customer")).thenThrow(SQLException.class);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -161,7 +163,7 @@ public class UserServiceTest {
 	@Test
 	public void registerEmployee() {
 		try {
-			Mockito.when(ud.addUser("david", "password", "employee")).thenReturn(1);
+			Mockito.when(ud.addUser("david", hashedPass, "employee")).thenReturn(1);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -170,7 +172,7 @@ public class UserServiceTest {
 			e.printStackTrace();
 		}
 		try {
-			assertEquals(new User(1, "david", "password", "employee"), us.registerEmployee("david", "password"));
+			assertEquals(new User(1, "david", hashedPass, "employee"), us.registerEmployee("david", "password"));
 		} catch (AuthException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -187,7 +189,7 @@ public class UserServiceTest {
 	@Test
 	public void registerEmployeeExists() {
 		try {
-			Mockito.when(ud.addUser("david", "password", "employee")).thenThrow(SQLException.class);
+			Mockito.when(ud.addUser("david", hashedPass, "employee")).thenThrow(SQLException.class);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

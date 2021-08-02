@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.lti.models.User;
 import com.lti.util.ConnectionUtil;
@@ -91,6 +93,46 @@ public class UserPostgres implements UserDao {
 		}
 
 		return user;
+	}
+
+	@Override
+	public List<User> getEmployees() throws IOException, SQLException {
+		String sql = "select * from users where user_role = 'employee';";
+		User user = null;
+		List<User> employees = new ArrayList<>();
+		
+		Connection con = ConnectionUtil.getConnectionFromFile();
+		
+		PreparedStatement ps = con.prepareStatement(sql);
+		
+		ResultSet rs = ps.executeQuery();
+		
+		while(rs.next()) {
+			int id = rs.getInt("user_id");
+			String username = rs.getString("user_user");
+			
+			user = new User(id, username, null, "employee");
+			employees.add(user);
+			
+		}
+		
+		
+		return employees;
+	}
+
+	@Override
+	public int removeUser(int userId) throws IOException, SQLException {
+		String sql = "delete * from users where user_id = ?;";
+		int rowsChanged = 0;
+		
+		Connection con = ConnectionUtil.getConnectionFromFile();
+		
+		PreparedStatement ps = con.prepareStatement(sql);
+		ps.setInt(1, userId);
+		
+		rowsChanged = ps.executeUpdate();
+		
+		return rowsChanged;
 	}
 
 }

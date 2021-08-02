@@ -2,6 +2,7 @@ package com.lti.services;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.lti.daos.UserDao;
 import com.lti.daos.UserPostgres;
@@ -72,6 +73,31 @@ public class UserServiceImpl implements UserService{
 	public String getUsernameById(int id) throws AuthException, IOException, SQLException {
 		
 		return ud.getUserById(id).getUser();
+	}
+
+	@Override
+	public int fireEmployee(int emplId) throws AuthException, IOException, SQLException {
+		// TODO Auto-generated method stub
+		return ud.removeUser(emplId);
+	}
+
+	@Override
+	public List<User> getEmployees() throws AuthException, IOException, SQLException {
+		return ud.getEmployees();
+	}
+
+	@Override
+	public User registerManager(String username, String password) throws AuthException, IOException, SQLException {
+		if (password.length() <= 5) {
+			throw new AuthException();
+		}
+		User user = new User();
+		String hashedPass = HashPass.getHasher().hashPass(password);
+		user.setId(ud.addUser(username, hashedPass, "manager"));
+		user.setUser(username);
+		user.setPass(hashedPass);
+		user.setRole("manager");
+		return user;
 	}
 
 }
