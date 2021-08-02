@@ -122,7 +122,7 @@ public class UserPostgres implements UserDao {
 
 	@Override
 	public int removeUser(int userId) throws IOException, SQLException {
-		String sql = "delete * from users where user_id = ?;";
+		String sql = "delete from users where user_id = ?;";
 		int rowsChanged = 0;
 		
 		Connection con = ConnectionUtil.getConnectionFromFile();

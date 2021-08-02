@@ -55,7 +55,69 @@ public class Menu {
 		UserService us = UserServiceImpl.getUserService();
 		
 		while(true) {
-			displayEmployees(us);
+			System.out.println("'sales' to view sales history\n'employees' to manage employees\n'exit' to exit");
+			userInput = scan.nextLine();
+			
+			if (userInput.equals("sales")) {
+				break;
+			}else if (userInput.equals("employees")) {
+				displayEmployees(us);
+				System.out.println("'fire' to fire an employee\n'hire' to add a new employee account");
+				while(true) {
+					userInput = scan.nextLine();
+					if(userInput.equals("fire")) {
+						System.out.println("Please enter an employee id to fire");
+						int emplId = 0;
+						while (true) {
+							try {
+								emplId = Integer.parseInt(scan.nextLine());
+								break;
+							} catch (NumberFormatException e) {
+								log.warn(warnNumberMsg);
+							}
+						}
+						try {
+							us.fireEmployee(emplId);
+							break;
+						} catch (AuthException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}else if(userInput.equals("hire")) {
+						System.out.println("Please enter a username: ");
+						String username = scan.nextLine();
+						System.out.println("Please enter a password: ");
+						String password = scan.nextLine();
+						try {
+							user = us.registerEmployee(username, password);
+						} catch (IOException e) {
+							System.out.println("Properties file was not found");
+							continue;
+						} catch (SQLException e) {
+							System.out.println("Username already exists");
+							continue;
+						} catch (AuthException e) {
+							System.out.println("Password too short (6 chars min)");
+							continue;
+						}
+						System.out.println("Succesfully registered!");
+						break;
+					}else {
+						System.out.println("Please enter a valid input");
+					}
+				}
+			}else if (userInput.equals("exit")) {
+				System.out.println("Have a nice day!");
+				break;
+			}else {
+				System.out.println("Please enter a valid input");
+			}
 		}
 	}
 
@@ -63,7 +125,33 @@ public class Menu {
 		for(int i = 0; i < 23;i++) {
 			System.out.print('_');
 		}
-		System.out.println(String.format("|%-10d|%-10.10s|", "Employee ID", "Employee Name"));
+		System.out.print("\n");
+		System.out.println(String.format("|%-10.10s|%-10.10s|", "Employee ID", "Employee Name"));
+		for(int i = 0; i < 23;i++) {
+			System.out.print('-');
+		}
+		List<User> employees = null;
+		System.out.print("\n");
+		try {
+			employees = us.getEmployees();
+		} catch (AuthException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		for (User e : employees) {
+			System.out.println(String.format("|%-10d|%-10.10s|", e.getId(), e.getUser()));
+		}
+		for(int i = 0; i < 23;i++) {
+			System.out.print('-');
+		}
+		System.out.print("\n");
+		
 		
 	}
 
@@ -169,7 +257,7 @@ public class Menu {
 					}
 					System.out.print("\n");
 					for (Offer o : offers) {
-						String off = String.format("|%-10d|%-15.15s|%-10f|%-15.15s|", o.getId(),
+						String off = String.format("|%-10d|%-15.15s|%-10.2f|%-15.15s|", o.getId(),
 								shop.getItem(new Item(o.getItemId())).getName(), o.getOfferAmount(),
 								us.getUsernameById(o.getCustomerId()));
 						System.out.println(off);
@@ -231,6 +319,22 @@ public class Menu {
 		UserService us = UserServiceImpl.getUserService();
 		try {
 			us.registerEmployee("empl", "password");
+		} catch (AuthException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void addManagerAccount() {
+		UserService us = UserServiceImpl.getUserService();
+		try {
+			us.registerManager("manager", "password");
 		} catch (AuthException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -418,7 +522,7 @@ public class Menu {
 	private static String formatItem(Item item, Shop shop, UserService us) {
 		String s = null;
 		try {
-			s = String.format("|%-10d|%-15.15s|%-15.15s|%-15.15s|%-10f|%-10f|", item.getId(), item.getName(),
+			s = String.format("|%-10d|%-15.15s|%-15.15s|%-15.15s|%-10.2f|%-10.2f|", item.getId(), item.getName(),
 					us.getUsernameById(item.getSellerId()), us.getUsernameById(item.getOwnerId()), item.getValue(),
 					item.getRemainingValue());
 			System.out.println(s);

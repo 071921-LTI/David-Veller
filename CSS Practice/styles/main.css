@@ -31,3 +31,11 @@ a:visited{
 a:hover{
     background-color: magenta;
 }
+
+#truth:hover{
+    background-color: green;
+}
+
+#lie:hover{
+    background-color: red;
+}

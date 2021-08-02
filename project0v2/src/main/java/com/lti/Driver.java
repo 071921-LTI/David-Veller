@@ -8,6 +8,7 @@ public class Driver {
 
 		Menu.runMenu();
 		//Menu.addEmplAccount();
+		//Menu.addManagerAccount();
 
 	}
 
