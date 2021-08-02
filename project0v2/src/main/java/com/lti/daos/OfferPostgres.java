@@ -12,6 +12,17 @@ import com.lti.models.Offer;
 import com.lti.util.ConnectionUtil;
 
 public class OfferPostgres implements OfferDao{
+	
+	private static OfferDao offerPostgres;
+	
+	private OfferPostgres() {}
+	
+	public static OfferDao getOfferPostgres() {
+		if (offerPostgres == null) {
+			offerPostgres = new OfferPostgres();
+		}
+		return offerPostgres;
+	}
 
 	@Override
 	public List<Offer> getOffers(int itemId) throws IOException, SQLException {

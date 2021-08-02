@@ -31,7 +31,7 @@ import net.bytebuddy.agent.builder.AgentBuilder.Identified;
 @ExtendWith(MockitoExtension.class)
 public class OfferDaoTest {
 	
-	private OfferDao od = new OfferPostgres();
+	private OfferDao od = OfferPostgres.getOfferPostgres();
 	
 
 	private static MockedStatic<ConnectionUtil> mockedConnectionUtil;

@@ -30,7 +30,7 @@ import net.bytebuddy.agent.builder.AgentBuilder.Identified;
 @ExtendWith(MockitoExtension.class)
 public class ItemDaoTest {
 	
-	private ItemDao id = new ItemPostgres();
+	private ItemDao id = ItemPostgres.getItemPostgres();
 	
 
 	private static MockedStatic<ConnectionUtil> mockedConnectionUtil;

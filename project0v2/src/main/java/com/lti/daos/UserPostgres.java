@@ -10,6 +10,17 @@ import com.lti.models.User;
 import com.lti.util.ConnectionUtil;
 
 public class UserPostgres implements UserDao {
+	
+	private static UserDao userPostgres;
+	
+	private UserPostgres() {}
+	
+	public static UserDao getUserPostgres() {
+		if (userPostgres == null) {
+			userPostgres = new UserPostgres();
+		}
+		return userPostgres;
+	}
 
 	@Override
 	public User getUserByUsername(String username) throws IOException, SQLException {

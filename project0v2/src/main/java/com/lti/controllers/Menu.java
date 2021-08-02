@@ -16,6 +16,7 @@ import com.lti.exceptions.UserNotFoundException;
 import com.lti.models.Item;
 import com.lti.models.Offer;
 import com.lti.models.User;
+import com.lti.services.HashPass;
 import com.lti.services.Shop;
 import com.lti.services.UserService;
 import com.lti.services.UserServiceImpl;
@@ -38,7 +39,6 @@ public class Menu {
 			return;
 		}
 
-		System.out.println(user);
 
 		if (user.getRole().equals("customer")) {
 			customerMenu(scan, user);
@@ -50,8 +50,8 @@ public class Menu {
 
 	private static void employeeMenu(Scanner scan, User user) {
 		String userInput;
-		Shop shop = new Shop();
-		UserService us = new UserServiceImpl();
+		Shop shop = Shop.getShop();
+		UserService us = UserServiceImpl.getUserService();
 
 		while (true) {
 
@@ -210,8 +210,8 @@ public class Menu {
 
 	private static void customerMenu(Scanner scan, User user) {
 		String userInput;
-		Shop shop = new Shop();
-		UserService us = new UserServiceImpl();
+		Shop shop = Shop.getShop();
+		UserService us = UserServiceImpl.getUserService();
 
 		while (true) {
 			displayAllItems(shop, us);
@@ -377,7 +377,7 @@ public class Menu {
 	private static User loginMenu(Scanner scan, User user) {
 
 		String userInput;
-		UserService us = new UserServiceImpl();
+		UserService us = UserServiceImpl.getUserService();
 
 		while (true) {
 			System.out.println("Welcome to Not Ebay!");
@@ -425,7 +425,6 @@ public class Menu {
 					System.out.println("Password too short (6 chars min)");
 					continue;
 				}
-
 				System.out.println("Succesfully registered!");
 				return user;
 			} else if (userInput.equals("exit")) {

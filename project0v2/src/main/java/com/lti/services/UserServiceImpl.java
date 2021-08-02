@@ -11,7 +11,18 @@ import com.lti.models.User;
 
 public class UserServiceImpl implements UserService{
 	
-	UserDao ud = new UserPostgres();
+	private static UserService userService;
+	
+	private UserServiceImpl() {}
+	
+	public static UserService getUserService() {
+		if (userService == null) {
+			userService = new UserServiceImpl();
+		}
+		return userService;
+	}
+	
+	UserDao ud = UserPostgres.getUserPostgres();
 
 	@Override
 	public User login(String username, String password) throws IOException, SQLException, AuthException, UserNotFoundException {
@@ -22,7 +33,7 @@ public class UserServiceImpl implements UserService{
 			throw new UserNotFoundException();
 		}
 		
-		if (!user.getPass().equals(password)) {
+		if (!user.getPass().equals(HashPass.getHasher().hashPass(password))) {
 			throw new AuthException();
 		}
 		
@@ -35,9 +46,10 @@ public class UserServiceImpl implements UserService{
 			throw new AuthException();
 		}
 		User user = new User();
-		user.setId(ud.addUser(username, password, "customer"));
+		String hashedPass = HashPass.getHasher().hashPass(password);
+		user.setId(ud.addUser(username, hashedPass, "customer"));
 		user.setUser(username);
-		user.setPass(password);
+		user.setPass(hashedPass);
 		user.setRole("customer");
 		return user;
 	}
@@ -48,9 +60,10 @@ public class UserServiceImpl implements UserService{
 			throw new AuthException();
 		}
 		User user = new User();
-		user.setId(ud.addUser(username, password, "employee"));
+		String hashedPass = HashPass.getHasher().hashPass(password);
+		user.setId(ud.addUser(username, hashedPass, "employee"));
 		user.setUser(username);
-		user.setPass(password);
+		user.setPass(hashedPass);
 		user.setRole("employee");
 		return user;
 	}

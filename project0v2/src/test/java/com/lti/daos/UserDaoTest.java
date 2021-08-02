@@ -28,7 +28,7 @@ import com.lti.util.ConnectionUtil;
 @ExtendWith(MockitoExtension.class)
 public class UserDaoTest {
 	
-	private UserDao ud = new UserPostgres();
+	private UserDao ud = UserPostgres.getUserPostgres();
 	
 	private static MockedStatic<ConnectionUtil> mockedConnectionUtil;
 	private static Connection connection;

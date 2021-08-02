@@ -12,6 +12,17 @@ import com.lti.models.Item;
 import com.lti.util.ConnectionUtil;
 
 public class ItemPostgres implements ItemDao {
+	
+	private static ItemDao itemPostgres;
+	
+	private ItemPostgres() {}
+	
+	public static ItemDao getItemPostgres() {
+		if (itemPostgres == null) {
+			itemPostgres = new ItemPostgres();
+		}
+		return itemPostgres;
+	}
 
 	@Override
 	public int addItem(Item item) throws IOException, SQLException {

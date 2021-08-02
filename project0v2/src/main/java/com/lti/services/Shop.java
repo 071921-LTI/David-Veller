@@ -17,8 +17,19 @@ import com.lti.models.User;
 
 public class Shop implements Shoppable {
 	
-	ItemDao id = new ItemPostgres();
-	OfferDao od = new OfferPostgres();
+	private static Shop shop;
+	
+	private Shop() {}
+	
+	public static Shop getShop() {
+		if (shop == null) {
+			shop = new Shop();
+		}
+		return shop;
+	}
+	
+	ItemDao id = ItemPostgres.getItemPostgres();
+	OfferDao od = OfferPostgres.getOfferPostgres();
 
 	@Override
 	public int addItem(Item item) throws IOException, SQLException {
@@ -75,8 +86,10 @@ public class Shop implements Shoppable {
 		
 		if (weeks <= 0) {
 			throw new PaymentException();
-		} else {
+		} else if (item != null){
 			return item.getRemainingValue() / weeks;
+		}else {
+			throw new PaymentException();
 		}
 	}
 
