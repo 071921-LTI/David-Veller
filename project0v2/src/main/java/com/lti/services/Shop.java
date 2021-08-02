@@ -16,58 +16,61 @@ import com.lti.models.Offer;
 import com.lti.models.User;
 
 public class Shop implements Shoppable {
+	
+	ItemDao id = new ItemPostgres();
+	OfferDao od = new OfferPostgres();
 
 	@Override
 	public int addItem(Item item) throws IOException, SQLException {
-		ItemDao id = new ItemPostgres();
+		
 		return id.addItem(item);
 	}
 
 	@Override
 	public int deleteItem(Item item) throws IOException, SQLException {
-		ItemDao id = new ItemPostgres();
+		
 		return id.deleteItem(item.getId());
 	}
 
 	@Override
 	public List<Item> viewAllItems() throws IOException, SQLException {
-		ItemDao id = new ItemPostgres();
+		
 		return id.viewAllItems();
 	}
 
 	@Override
 	public List<Item> viewOwnedItems(User user) throws IOException, SQLException {
-		ItemDao id = new ItemPostgres();
+		
 		return id.viewOwnedItems(user.getId());
 	}
 
 	@Override
 	public int updateOwner(Item item, User user) throws IOException, SQLException {
-		ItemDao id = new ItemPostgres();
+		
 		return id.updateOwner(item.getId(), user.getId());
 	}
 
 	@Override
 	public int updateValue(Item item, float value) throws IOException, SQLException {
-		ItemDao id = new ItemPostgres();
+		
 		return id.updateValue(item.getId(), value);
 	}
 
 	@Override
 	public int updateRemainingValue(Item item, float remainingValue) throws IOException, SQLException {
-		ItemDao id = new ItemPostgres();
+		
 		return id.updateRemainingValue(item.getId(), remainingValue);
 	}
 
 	@Override
 	public Item getItem(Item item) throws IOException, SQLException {
-		ItemDao id = new ItemPostgres();
+		
 		return id.getItemById(item.getId());
 	}
 
 	@Override
 	public float calcWeeklyPayment(int weeks, Item item) throws PaymentException, IOException, SQLException {
-		ItemDao id = new ItemPostgres();
+		
 		item = id.getItemById(item.getId());
 		
 		if (weeks <= 0) {
@@ -79,20 +82,22 @@ public class Shop implements Shoppable {
 
 	@Override
 	public int makeOffer(Item item, User user, float offerAmount) throws IOException, SQLException {
-		OfferDao od = new OfferPostgres();
+		
 		
 		return od.newOffer(offerAmount, item.getId(), user.getId());
 	}
 
 	@Override
 	public int acceptOffer(Offer offer) throws IOException, SQLException {
-		OfferDao od = new OfferPostgres();
-		ItemDao id = new ItemPostgres();
+		
+		
 		
 		//can maybe make this a transaction?
 		//is this efficient?
 		//dao.begin
 		offer = od.getOffer(offer.getId());
+		
+		int offersDeleted = 0;
 		
 		id.updateOwner(offer.getItemId(), offer.getCustomerId());
 		id.updateValue(offer.getItemId(), offer.getOfferAmount());
@@ -100,21 +105,21 @@ public class Shop implements Shoppable {
 		List<Offer> otherOffers = od.getOffers(offer.getItemId());
 		for (Offer o : otherOffers) {
 			od.deleteOffer(o.getId());
+			offersDeleted++;
 		}
 		//dao.exit
 		
-		return 0;
+		return offersDeleted;
 	}
 
 	@Override
 	public int rejectOffer(Offer offer) throws IOException, SQLException {
-		OfferPostgres os = new OfferPostgres();
-		return os.deleteOffer(offer.getId());
+		return od.deleteOffer(offer.getId());
 	}
 
 	@Override
 	public int makePayment(User user, Item item, float amount) throws NotYourItemException, IOException, SQLException{
-		ItemDao id = new ItemPostgres();
+		
 		
 		if (item.getOwnerId() != user.getId()) {
 			throw new NotYourItemException();
@@ -130,13 +135,13 @@ public class Shop implements Shoppable {
 
 	@Override
 	public List<Item> viewSoldItems(User user) throws IOException, SQLException {
-		ItemDao id = new ItemPostgres();
+		
 		return id.viewSoldItems(user.getId());
 	}
 
 	@Override
 	public List<Offer> getOffers(int itemId) throws IOException, SQLException, NoOffersException {
-		OfferDao od = new OfferPostgres();
+		
 		List<Offer> offers = od.getOffers(itemId);
 		if (offers.isEmpty()) {
 			throw new NoOffersException();
@@ -148,7 +153,7 @@ public class Shop implements Shoppable {
 
 	@Override
 	public boolean isItemOwned(int userId, int itemId) throws IOException, SQLException {
-		ItemDao id = new ItemPostgres();
+		
 		
 		if (id.getItemById(itemId) == null) {
 			return false;

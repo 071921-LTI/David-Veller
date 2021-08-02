@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.lti.exceptions.AuthException;
 import com.lti.exceptions.NoOffersException;
 import com.lti.exceptions.PaymentException;
@@ -18,6 +21,11 @@ import com.lti.services.UserService;
 import com.lti.services.UserServiceImpl;
 
 public class Menu {
+
+	private static Logger log = LogManager.getRootLogger();
+	private static String warnNumberMsg = "Please enter a number";
+	private static String errorMsg = "Exception was thrown: ";
+	private static String IOExceptionMsg = "Properties file was not found: ";
 
 	public static void runMenu() {
 
@@ -58,16 +66,22 @@ public class Menu {
 					System.out.println("Please enter an item name: ");
 					String name = scan.nextLine();
 					System.out.println("Please enter a value for your item: ");
-					float value = Float.parseFloat(scan.nextLine());
+					float value;
+					while (true) {
+						try {
+							value = Float.parseFloat(scan.nextLine());
+							break;
+						} catch (NumberFormatException e) {
+							log.warn(warnNumberMsg);
+						}
+					}
 
 					Item item = new Item(0, name, user.getId(), user.getId(), value, value);
 					item.setId(shop.addItem(item));
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(IOExceptionMsg + e.fillInStackTrace());
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(errorMsg + e.fillInStackTrace());
 				}
 				System.out.println("Your item has been added!");
 
@@ -79,17 +93,15 @@ public class Menu {
 						id = Integer.parseInt(scan.nextLine());
 						break;
 					} catch (NumberFormatException e) {
-						System.out.println("Please enter a number");
+						log.warn(warnNumberMsg);
 					}
 				}
 				try {
 					shop.deleteItem(new Item(id));
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(IOExceptionMsg + e.fillInStackTrace());
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(errorMsg + e.fillInStackTrace());
 				}
 				System.out.println("Your item has been deleted!");
 
@@ -102,10 +114,9 @@ public class Menu {
 						formatItem(i, shop, us);
 					}
 				} catch (IOException e) {
-					System.out.println("Properties file not found");
+					log.error(IOExceptionMsg + e.fillInStackTrace());
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(errorMsg + e.fillInStackTrace());
 				}
 				dispBottom();
 				System.out.println("Press enter to go back to menu");
@@ -120,7 +131,7 @@ public class Menu {
 						id = Integer.parseInt(scan.nextLine());
 						break;
 					} catch (NumberFormatException e) {
-						System.out.println("Please enter a number");
+						log.warn(warnNumberMsg);
 					}
 				}
 				for (int i = 0; i < 55; i++) {
@@ -145,7 +156,7 @@ public class Menu {
 						System.out.println(off);
 						offerIds.add(o.getId());
 					}
-				
+
 					System.out.println("Please enter an offer id that you would like to accept/reject");
 					int offerId;
 					while (true) {
@@ -153,15 +164,14 @@ public class Menu {
 							offerId = Integer.parseInt(scan.nextLine());
 							break;
 						} catch (NumberFormatException e) {
-							System.out.println("Please enter a number");
+							log.warn(warnNumberMsg);
 						}
 					}
-					if(!offerIds.contains(offerId)) {
+					if (!offerIds.contains(offerId)) {
 						System.out.println("That offer does not exist");
 						break;
 					}
-				
-				
+
 					System.out.println("Type 'accept' to accept the offer or 'reject' to reject the offer");
 					while (true) {
 						userInput = scan.nextLine();
@@ -179,14 +189,11 @@ public class Menu {
 					}
 
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(IOExceptionMsg + e.fillInStackTrace());
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(errorMsg + e.fillInStackTrace());
 				} catch (AuthException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(errorMsg + e.fillInStackTrace());
 				} catch (NoOffersException e1) {
 					System.out.println("This item has no offers\nPress enter to continue");
 					scan.nextLine();
@@ -222,7 +229,7 @@ public class Menu {
 							itemId = Integer.parseInt(scan.nextLine());
 							break;
 						} catch (NumberFormatException e) {
-							System.out.println("Please enter a number");
+							log.warn(warnNumberMsg);
 						}
 					}
 
@@ -233,17 +240,16 @@ public class Menu {
 							offerAmount = Integer.parseInt(scan.nextLine());
 							break;
 						} catch (NumberFormatException e) {
-							System.out.println("Please enter a number");
+							log.warn(warnNumberMsg);
 						}
 					}
 					try {
 						shop.makeOffer(new Item(itemId), user, offerAmount);
 						break;
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.error(IOExceptionMsg + e.fillInStackTrace());
 					} catch (SQLException e) {
-						System.out.println("Item was not found");
+						log.error("Item was not found");
 					}
 				}
 				System.out.println("You have made an offer!");
@@ -258,7 +264,7 @@ public class Menu {
 						itemId = Integer.parseInt(scan.nextLine());
 						break;
 					} catch (NumberFormatException e) {
-						System.out.println("Please enter a number");
+						log.warn(warnNumberMsg);
 					}
 				}
 				System.out.println("Please enter the number of weeks you would like to take to repay the item");
@@ -269,7 +275,7 @@ public class Menu {
 							weeks = Integer.parseInt(scan.nextLine());
 							break;
 						} catch (NumberFormatException e) {
-							System.out.println("Please enter a number");
+							log.warn(warnNumberMsg);
 						}
 					}
 					try {
@@ -281,13 +287,11 @@ public class Menu {
 						System.out.println("Your weekly payment is " + weeklyAmount.toString());
 						break;
 					} catch (PaymentException e) {
-						System.out.println("Please enter a valid number of weeks");
+						log.warn("Please enter a valid number of weeks");
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.error(IOExceptionMsg + e.fillInStackTrace());
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.error(errorMsg + e.fillInStackTrace());
 					}
 				}
 
@@ -309,10 +313,9 @@ public class Menu {
 				formatItem(i, shop, us);
 			}
 		} catch (IOException e) {
-			System.out.println("Properties file not found");
+			log.error(IOExceptionMsg + e.fillInStackTrace());
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(errorMsg + e.fillInStackTrace());
 		}
 		dispBottom();
 	}
@@ -325,10 +328,9 @@ public class Menu {
 				formatItem(i, shop, us);
 			}
 		} catch (IOException e) {
-			System.out.println("Properties file not found");
+			log.error(IOExceptionMsg + e.fillInStackTrace());
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(errorMsg + e.fillInStackTrace());
 		}
 		dispBottom();
 	}
@@ -355,14 +357,11 @@ public class Menu {
 					item.getRemainingValue());
 			System.out.println(s);
 		} catch (AuthException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(errorMsg + e.fillInStackTrace());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(errorMsg + e.fillInStackTrace());
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(errorMsg + e.fillInStackTrace());
 		}
 
 		return s;
