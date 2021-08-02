@@ -365,7 +365,12 @@ public class ShopTest {
 			e.printStackTrace();
 		}
 		try {
-			assertEquals(shop.calcWeeklyPayment(2, item), 5);
+			try {
+				assertEquals(shop.calcWeeklyPayment(2, item), 5);
+			} catch (NotYourItemException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (PaymentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

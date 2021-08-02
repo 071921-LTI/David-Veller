@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.lti.exceptions.AuthException;
 import com.lti.exceptions.NoOffersException;
+import com.lti.exceptions.NotYourItemException;
 import com.lti.exceptions.PaymentException;
 import com.lti.exceptions.UserNotFoundException;
 import com.lti.models.Item;
@@ -207,6 +208,22 @@ public class Menu {
 		}
 
 	}
+	
+	public static void addEmplAccount() {
+		UserService us = UserServiceImpl.getUserService();
+		try {
+			us.registerEmployee("empl", "password");
+		} catch (AuthException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	private static void customerMenu(Scanner scan, User user) {
 		String userInput;
@@ -269,6 +286,7 @@ public class Menu {
 				}
 				System.out.println("Please enter the number of weeks you would like to take to repay the item");
 				int weeks;
+				boolean skipPayment = false;
 				while (true) {
 					while (true) {
 						try {
@@ -292,7 +310,37 @@ public class Menu {
 						log.error(IOExceptionMsg + e.fillInStackTrace());
 					} catch (SQLException e) {
 						log.error(errorMsg + e.fillInStackTrace());
+					} catch (NotYourItemException e) {
+						System.out.println("Not your item");
+						skipPayment = true;
+						break;
 					}
+				}
+				if (skipPayment) {
+					continue;
+				}
+				System.out.println("Please enter a payment amount: ");
+				Float payment;
+				while (true) {
+					try {
+						payment = Float.parseFloat(scan.nextLine());
+						break;
+					} catch (NumberFormatException e) {
+						log.warn(warnNumberMsg);
+					}
+				}
+				try {
+					shop.makePayment(user, shop.getItem(new Item(itemId)), payment);
+					System.out.println("You have made a payment of " + payment.toString() + " and the remaining value is " + shop.getItem(new Item(itemId)).getRemainingValue());
+				} catch (NotYourItemException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 
 			} else if (userInput.equals("exit")) {

@@ -22,7 +22,7 @@ public interface Shoppable {
 	public abstract int updateValue(Item item, float value) throws IOException, SQLException;
 	public abstract int updateRemainingValue(Item item, float remainingValue) throws IOException, SQLException;
 	public abstract Item getItem(Item item) throws IOException, SQLException;
-	public abstract float calcWeeklyPayment(int weeks, Item item) throws PaymentException, IOException, SQLException;
+	public abstract float calcWeeklyPayment(int weeks, Item item) throws PaymentException, IOException, SQLException, NotYourItemException;
 	public abstract int makeOffer(Item item, User user, float offerAmount) throws IOException, SQLException;
 	public abstract int acceptOffer(Offer offer) throws IOException, SQLException;
 	public abstract int rejectOffer(Offer offer) throws IOException, SQLException;

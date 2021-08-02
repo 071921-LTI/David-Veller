@@ -80,7 +80,7 @@ public class Shop implements Shoppable {
 	}
 
 	@Override
-	public float calcWeeklyPayment(int weeks, Item item) throws PaymentException, IOException, SQLException {
+	public float calcWeeklyPayment(int weeks, Item item) throws PaymentException, IOException, SQLException, NotYourItemException {
 		
 		item = id.getItemById(item.getId());
 		
@@ -89,7 +89,7 @@ public class Shop implements Shoppable {
 		} else if (item != null){
 			return item.getRemainingValue() / weeks;
 		}else {
-			throw new PaymentException();
+			throw new NotYourItemException();
 		}
 	}
 
