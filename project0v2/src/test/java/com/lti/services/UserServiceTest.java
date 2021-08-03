@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -29,8 +31,136 @@ public class UserServiceTest {
 	private UserDao ud;
 
 	@InjectMocks
-	private UserServiceImpl us;
+	private UserService us = UserServiceImpl.getUserService();
 
+	@Test
+	public void getUserService() {
+		assertEquals(us, UserServiceImpl.getUserService());
+	}
+	
+	@Test
+	public void registerManager() {
+		try {
+			Mockito.when(ud.addUser("david", hashedPass, "manager")).thenReturn(1);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			assertEquals(new User(1, "david", hashedPass, "manager"), us.registerManager("david", "password"));
+		} catch (AuthException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Test
+	public void registerManagerExists() {
+		try {
+			Mockito.when(ud.addUser("david", hashedPass, "manager")).thenThrow(SQLException.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertThrows(SQLException.class, () -> us.registerManager("david", "password"));
+	}
+	
+	@Test
+	public void registerManagerShortpass() {
+		assertThrows(AuthException.class, () -> us.registerManager("david", "pass"));
+	}
+	
+	@Test
+	public void getEmployees() {
+		List<User> employees = new ArrayList<>();
+		employees.add(new User(1, "hello", "pass", "employee"));
+		employees.add(new User(2, "bye", "pass", "employee"));
+		try {
+			Mockito.when(ud.getEmployees()).thenReturn(employees);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			assertEquals(2, us.getEmployees().size());
+		} catch (AuthException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void fireEmployeeExists() {
+		try {
+			Mockito.when(ud.removeUser(1)).thenReturn(1);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			assertEquals(1, us.fireEmployee(1));
+		} catch (AuthException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void fireEmployeeNotExists() {
+		try {
+			Mockito.when(ud.removeUser(1)).thenReturn(0);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			assertEquals(0, us.fireEmployee(1));
+		} catch (AuthException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	@Test
 	public void getUsernameById() {
 

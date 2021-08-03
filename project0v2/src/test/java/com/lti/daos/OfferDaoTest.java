@@ -60,6 +60,11 @@ public class OfferDaoTest {
 	*/
 	
 	@Test
+	public void getOfferPostgres() {
+		assertEquals(od, OfferPostgres.getOfferPostgres());
+	}
+	
+	@Test
 	public void getOffersExists() {
 		int expected = 2;
 		int actual = 0;

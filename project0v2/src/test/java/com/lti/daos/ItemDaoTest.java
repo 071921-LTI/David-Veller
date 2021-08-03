@@ -59,6 +59,11 @@ public class ItemDaoTest {
 	*/
 	
 	@Test
+	public void getItemDao() {
+		assertEquals(id, ItemPostgres.getItemPostgres());
+	}
+	
+	@Test
 	public void deleteItemExists() {
 		int expected = 1;
 		int actual = 0;

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.AfterAll;
@@ -23,6 +24,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.lti.models.User;
 import com.lti.util.ConnectionUtil;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +35,10 @@ public class UserDaoTest {
 	private static MockedStatic<ConnectionUtil> mockedConnectionUtil;
 	private static Connection connection;
 	
+	@Test
+	public void getUserPostgres() {
+		assertEquals(ud, UserPostgres.getUserPostgres());
+	}
 	
 	@Test
 	public void getUserByIdExists() {
@@ -50,7 +56,7 @@ public class UserDaoTest {
 	@Test
 	public void getUserByIdNotExists() {
 		try {
-			assertNull(ud.getUserById(2));
+			assertNull(ud.getUserById(5));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -94,6 +100,52 @@ public class UserDaoTest {
 	@Test
 	public void addNewUserShortPass() {
 		assertThrows(SQLException.class, () -> ud.addUser("newuser", "he", "customer"));
+	}
+	
+	@Test
+	public void getEmployees() {
+		List<User> employees = null;
+		try {
+			assertEquals(2, ud.getEmployees().size());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void deleteUserExists() {
+		int expected = 1;
+		int actual = 0;
+		try {
+			actual = ud.removeUser(1);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void deleteUserNotExists() {
+		int expected = 0;
+		int actual = -1;
+		try {
+			actual = ud.removeUser(5);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertEquals(expected, actual);
 	}
 	
 	/*

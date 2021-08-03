@@ -34,11 +34,16 @@ public class ShopTest {
 	private OfferDao od;
 	
 	@InjectMocks
-	private Shop shop;
+	private Shop shop = Shop.getShop();
 	
 	Item item = new Item(1, "thing", 1, 1, 10, 10);
 	User user = new User(1, "david", "password", "customer");
 	Offer offer = new Offer(1, 20, 1, 1);
+	
+	@Test
+	public void getShop() {
+		assertEquals(shop, Shop.getShop());
+	}
 	
 	@Test
 	public void addItem() {

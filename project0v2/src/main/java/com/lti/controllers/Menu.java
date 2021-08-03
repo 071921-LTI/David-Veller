@@ -62,7 +62,7 @@ public class Menu {
 				break;
 			}else if (userInput.equals("employees")) {
 				displayEmployees(us);
-				System.out.println("'fire' to fire an employee\n'hire' to add a new employee account");
+				System.out.println("'fire' to fire an employee\n'hire' to add a new employee account\n'exit' to exit");
 				while(true) {
 					userInput = scan.nextLine();
 					if(userInput.equals("fire")) {
@@ -108,7 +108,10 @@ public class Menu {
 						}
 						System.out.println("Succesfully registered!");
 						break;
-					}else {
+					}else if (userInput.equals("exit")) {
+						break;
+					}
+					else {
 						System.out.println("Please enter a valid input");
 					}
 				}
@@ -122,12 +125,12 @@ public class Menu {
 	}
 
 	private static void displayEmployees(UserService us) {
-		for(int i = 0; i < 23;i++) {
+		for(int i = 0; i < 33;i++) {
 			System.out.print('_');
 		}
 		System.out.print("\n");
-		System.out.println(String.format("|%-10.10s|%-10.10s|", "Employee ID", "Employee Name"));
-		for(int i = 0; i < 23;i++) {
+		System.out.println(String.format("|%-15.15s|%-15.15s|", "Employee ID", "Employee Name"));
+		for(int i = 0; i < 33;i++) {
 			System.out.print('-');
 		}
 		List<User> employees = null;
@@ -145,9 +148,9 @@ public class Menu {
 			e1.printStackTrace();
 		}
 		for (User e : employees) {
-			System.out.println(String.format("|%-10d|%-10.10s|", e.getId(), e.getUser()));
+			System.out.println(String.format("|%-15d|%-15.15s|", e.getId(), e.getUser()));
 		}
-		for(int i = 0; i < 23;i++) {
+		for(int i = 0; i < 33;i++) {
 			System.out.print('-');
 		}
 		System.out.print("\n");
@@ -395,7 +398,11 @@ public class Menu {
 
 			} else if (userInput.equals("owned")) {
 
-				displayOwnedItems(user, shop, us);
+				if (!displayOwnedItems(user, shop, us)) {
+					System.out.println("You do not own any items\nPress enter to continue");
+					scan.nextLine();
+					continue;
+				}
 				System.out.println("Enter the item id for which to view remaining payments");
 				int itemId;
 				while (true) {
@@ -490,10 +497,13 @@ public class Menu {
 		dispBottom();
 	}
 
-	private static void displayOwnedItems(User user, Shop shop, UserService us) {
+	private static boolean displayOwnedItems(User user, Shop shop, UserService us) {
 		dispTop();
 		try {
 			List<Item> items = shop.viewOwnedItems(user);
+			if (items.size() == 0) {
+				return false;
+			}
 			for (Item i : items) {
 				formatItem(i, shop, us);
 			}
@@ -503,6 +513,7 @@ public class Menu {
 			log.error(errorMsg + e.fillInStackTrace());
 		}
 		dispBottom();
+		return true;
 	}
 
 	private static void dispTop() {
