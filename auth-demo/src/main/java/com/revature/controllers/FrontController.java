@@ -16,7 +16,7 @@ public class FrontController extends HttpServlet {
 	private RequestHelper rh = new RequestHelper();
 	
 	protected void doGet(HttpServletRequest rq, HttpServletResponse rs) throws IOException, ServletException{
-		addCorsHeader(rq.getRequestURI(),rs);
+		addCorsHeader(rq.getRequestURI() ,rs);
 		rh.process(rq, rs);
 	}
 	
@@ -34,8 +34,8 @@ public class FrontController extends HttpServlet {
 	
 	public static void addCorsHeader(String requestURI, HttpServletResponse rs) {
 		rs.addHeader("Access-Control-Allow-Origin", "*");
-		rs.addHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE");
-		rs.addHeader("Access-Control-Allow-Headers", "Content-Type, Accept, Authorization");
-		rs.addHeader("Access-Control-Expose-Headers", "Content-Type, Accept, Authorization");
+		rs.addHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+		rs.addHeader("Access-Control-Allow-Headers", "Content-Type, Accept, Authorize");
+		rs.addHeader("Access-Control-Expose-Headers", "Content-Type, Accept, Authorize");
 	}
 }

@@ -3,11 +3,7 @@ document.getElementById('getData').addEventListener("click", getData);
 
 let apiURL = 'https://pokeapi.co/api/v2/pokemon/';
 
-function getData() {
-
-    let userInput = document.getElementById('dataInput').value;
-
-    let xhr = new XMLHttpRequest();
+let xhr = new XMLHttpRequest();
 
     xhr.onreadystatechange = receiveData;
 
@@ -22,8 +18,6 @@ function getData() {
             populateData(response);
         }
     }
-  
-}
 
 function populateData(response) {
     console.log(response);
