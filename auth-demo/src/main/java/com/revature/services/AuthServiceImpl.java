@@ -31,4 +31,13 @@ public class AuthServiceImpl implements AuthService {
 			return true;
 		}
 	}
+
+	@Override
+	public String createToken(User user) {
+		String token = "";
+		
+		token = user.getId()+":"+user.getRole();
+		
+		return token;
+	}
 }
