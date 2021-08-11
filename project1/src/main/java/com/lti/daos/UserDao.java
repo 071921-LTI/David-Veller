@@ -13,9 +13,7 @@ public interface UserDao {
 	
 	User addUser(User user) throws ConstraintViolationException;
 	User getUserByUsername(String username) throws NoResultException;
-	//User getUserById(int userId);
-	void updateUser(User user) throws NotFoundException;
+	boolean updateUser(User user);
 	List<User> getUserByRole(String role);
-	//int deleteUser(int userId);
 
 }

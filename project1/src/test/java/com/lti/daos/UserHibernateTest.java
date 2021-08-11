@@ -2,7 +2,6 @@ package com.lti.daos;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.sql.SQLException;
@@ -121,7 +120,7 @@ public class UserHibernateTest {
 	
 	@Test
 	@Order(6)
-	public void updateUser() throws NotFoundException{
+	public void updateUser(){
 		User upUser = ud.getUserByUsername("username");
 		upUser.setEmail("newemail@email.com");
 		ud.updateUser(upUser);
@@ -133,7 +132,7 @@ public class UserHibernateTest {
 	public void updateUserNotExists(){
 		User upUser = emplUser;
 		upUser.setUserId(10);
-		assertThrows(NotFoundException.class, () -> ud.updateUser(upUser));
+		assertEquals(ud.updateUser(upUser), false);
 	}
 	
 	@Test

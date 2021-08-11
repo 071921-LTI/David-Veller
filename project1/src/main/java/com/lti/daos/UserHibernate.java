@@ -51,16 +51,17 @@ public class UserHibernate implements UserDao{
 	}
 
 	@Override
-	public void updateUser(User user) throws NotFoundException {
+	public boolean updateUser(User user) {
 		try (Session s = HibernateUtil.getSessionFactory().openSession()) {
 			if (s.get(User.class, user.getUserId()) == null) {
-				throw new NotFoundException();
+				return false;
 			} else {
 				Transaction tx = s.beginTransaction();
 				s.merge(user);
 				tx.commit();
 
 			}
+			return true;
 
 		}
 		
