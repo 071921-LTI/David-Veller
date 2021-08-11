@@ -2,15 +2,19 @@ package com.lti.daos;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+import javax.persistence.NoResultException;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -32,8 +36,8 @@ import com.lti.util.HibernateUtil;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(OrderAnnotation.class)
-public class ReimbursementHibernateTest {
-
+public class UserHibernateTest {
+	
 	private static MockedStatic<HibernateUtil> mockedHibernateUtil;
 	private static SessionFactory sf;
 
@@ -69,12 +73,13 @@ public class ReimbursementHibernateTest {
 		mockedHibernateUtil.close();
 	}
 
-	ReimbursementDao rd = ReimbursementHibernate.getReimbursementHibernate();
+	UserDao ud = UserHibernate.getUserHibernate();
 	
 	ReimbStatus rs = new ReimbStatus(1, "pending");
 	ReimbType rt = new ReimbType(1, "LODGING");
 	UserRole empl = new UserRole(2, "employee");
 	UserRole man = new UserRole(1, "manager");
+	User newUser = new User("newUser", "password", "first", "last", "newuser@email.com", empl);
 	User emplUser = new User(1, "username", "password", "first", "last", "user@email.com", empl);
 	User manUser = new User(2, "david", "password", "first", "last", "david@email.com", man);
 	Reimb reimb = new Reimb(30, Timestamp.valueOf(LocalDateTime.now()), emplUser, rs, rt);
@@ -89,97 +94,64 @@ public class ReimbursementHibernateTest {
 	
 	@Test
 	@Order(2)
-	public void addReimb() {
-		Reimb expected = reimb;
-		Reimb result = rd.addReimb(reimb);
-		expected.setReimbId(3);
-		assertEquals(expected, result);
+	public void addUserNotExist() {
+		assertEquals(newUser, ud.addUser(newUser));
 	}
 	
 	@Test
 	@Order(3)
-	public void getReimbByStatusAndUser1() {
-		assertEquals(3, rd.getReimbByStatusAndUser(rs, emplUser).size());
+	public void addUserExist() {
+		User upUser = new User("newUser", "password", "first", "last", "newuser@email.com", empl);
+		assertThrows(ConstraintViolationException.class, () -> ud.addUser(upUser));
 	}
 	
 	@Test
 	@Order(4)
-	public void getReimbByStatusAndUser2() {
-		assertEquals(0, rd.getReimbByStatusAndUser(rs, manUser).size());
+	public void getUserByUsernameExists() {
+		assertEquals(emplUser, ud.getUserByUsername("username"));
 	}
 	
 	@Test
 	@Order(5)
-	public void getReimbByStatusAndUser3() {
-		assertEquals(0, rd.getReimbByStatusAndUser(new ReimbStatus(2, "resolved"), emplUser).size());
+	public void getUserByUsernameNotExists() {
+		assertThrows(NoResultException.class, () -> ud.getUserByUsername("hello"));
 	}
+	
+
 	
 	@Test
 	@Order(6)
-	public void getReimbByStatusAndUser1str() {
-		assertEquals(3, rd.getReimbByStatusAndUser("pending", "username").size());
+	public void updateUser() throws NotFoundException{
+		User upUser = ud.getUserByUsername("username");
+		upUser.setEmail("newemail@email.com");
+		ud.updateUser(upUser);
+		assertEquals(upUser.getEmail(), ud.getUserByUsername("username").getEmail());
 	}
 	
 	@Test
 	@Order(7)
-	public void getReimbByStatusAndUser2str() {
-		assertEquals(0, rd.getReimbByStatusAndUser("pending", "david").size());
+	public void updateUserNotExists(){
+		User upUser = emplUser;
+		upUser.setUserId(10);
+		assertThrows(NotFoundException.class, () -> ud.updateUser(upUser));
 	}
 	
 	@Test
 	@Order(8)
-	public void getReimbByStatusAndUser3str() {
-		assertEquals(0, rd.getReimbByStatusAndUser("resolved", "username").size());
-	}
-	
-	@Test
-	@Order(14)
-	public void updateReimb() throws NotFoundException {
-		reimb.setReimbId(3);
-		reimb = rd.getReimb(reimb);
-		reimb.setAuthor(manUser);
-		reimb.setResolver(manUser);
-		rd.updateReimb(reimb);
-		assertEquals(rd.getReimb(reimb).getAuthor(), reimb.getAuthor());
-	}
-	
-	@Test
-	@Order(10)
-	public void updateReimbNoId() {
-		Reimb testReimb = reimb;
-		testReimb.setReimbId(10);
-		assertThrows(NotFoundException.class, () -> rd.updateReimb(testReimb));
-	}
-	
-	@Test
-	@Order(11)
-	public void getReimbByStatusExists() {
-		assertEquals(3, rd.getReimbByStatus("pending").size());
-	}
-	
-	@Test
-	@Order(12)
-	public void getReimbByStatusNotExists() {
-		assertEquals(0, rd.getReimbByStatus("resolved").size());
-	}
-	
-	@Test
-	@Order(13)
-	public void getReimbByUserExists() {
-		assertEquals(3, rd.getReimbByUser("username").size());
+	public void getUserByRoleExistEmpl() {
+		assertEquals(2, ud.getUserByRole("employee").size());
 	}
 	
 	@Test
 	@Order(9)
-	public void getReimbByUserNotExists() {
-		assertEquals(0, rd.getReimbByUser("david").size());
+	public void getUserByRoleExistMang() {
+		assertEquals(1, ud.getUserByRole("manager").size());
 	}
 	
 	@Test
-	@Order(15)
-	public void deleteReimbExists() {
-		rd.deleteReimb(reimb);
-		assertEquals(null, rd.getReimb(reimb));
+	@Order(10)
+	public void getUserByRoleNotExist() {
+		assertEquals(0, ud.getUserByRole("role").size());
 	}
-	
+
 }

@@ -88,9 +88,8 @@ public class ReimbursementHibernate implements ReimbursementDao {
 			if (s.get(Reimb.class, reimb.getReimbId()) == null) {
 				throw new NotFoundException();
 			} else {
-				s.clear();
 				Transaction tx = s.beginTransaction();
-				s.update(reimb);
+				s.merge(reimb);
 				tx.commit();
 
 			}
