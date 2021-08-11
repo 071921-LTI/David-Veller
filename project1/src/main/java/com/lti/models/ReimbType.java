@@ -1,18 +1,31 @@
 package com.lti.models;
 
-public class ReimbursementType {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "ers_reimbursement_type")
+public class ReimbType {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(nullable = false, name = "reimb_type_id")
 	private int typeId;
+	@Column(name = "reimb_type", nullable = false)
 	private String type;
 	
 	
 	
-	public ReimbursementType(int typeId, String type) {
+	public ReimbType(int typeId, String type) {
 		super();
 		this.typeId = typeId;
 		this.type = type;
 	}
-	public ReimbursementType() {
+	public ReimbType() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -36,7 +49,7 @@ public class ReimbursementType {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ReimbursementType other = (ReimbursementType) obj;
+		ReimbType other = (ReimbType) obj;
 		if (type == null) {
 			if (other.type != null)
 				return false;

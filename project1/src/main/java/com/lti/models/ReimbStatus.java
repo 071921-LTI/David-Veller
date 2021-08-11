@@ -1,18 +1,31 @@
 package com.lti.models;
 
-public class ReimbursementStatus {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "ers_reimbursement_status")
+public class ReimbStatus {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(nullable = false, name = "reimb_status_id")
 	private int statusId;
+	@Column(name = "reimb_status", nullable = false)
 	private String status;
 	
 	
 	
-	public ReimbursementStatus(int statusId, String status) {
+	public ReimbStatus(int statusId, String status) {
 		super();
 		this.statusId = statusId;
 		this.status = status;
 	}
-	public ReimbursementStatus() {
+	public ReimbStatus() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -36,7 +49,7 @@ public class ReimbursementStatus {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ReimbursementStatus other = (ReimbursementStatus) obj;
+		ReimbStatus other = (ReimbStatus) obj;
 		if (status == null) {
 			if (other.status != null)
 				return false;

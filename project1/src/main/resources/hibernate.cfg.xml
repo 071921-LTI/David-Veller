@@ -16,8 +16,8 @@
 		<property name="hibernate.hbm2ddl.auto">validate</property>
 		
 		<mapping class="com.lti.models.Reimb"></mapping>
-		<mapping class="com.lti.models.ReimbursementStatus"></mapping>
-		<mapping class="com.lti.models.ReimbursementType"></mapping>
+		<mapping class="com.lti.models.ReimbStatus"></mapping>
+		<mapping class="com.lti.models.ReimbType"></mapping>
 		<mapping class="com.lti.models.User"></mapping>
 		<mapping class="com.lti.models.UserRole"></mapping>
 

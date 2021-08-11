@@ -1,11 +1,11 @@
 package com.lti.daos;
 
-import com.lti.models.ReimbursementType;
+import com.lti.models.ReimbType;
 
 public interface ReimbursementTypeDao {
 	
 	int addReimbType(String type);
 	int deleteReimbType(int id);
-	ReimbursementType getReimbType(String type);
+	ReimbType getReimbType(String type);
 
 }

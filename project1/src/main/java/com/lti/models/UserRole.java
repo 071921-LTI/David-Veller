@@ -1,8 +1,21 @@
 package com.lti.models;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "ers_user_roles")
 public class UserRole {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(nullable = false, name = "ers_user_role_id")
 	private int roleId;
+	@Column(name = "user_role", nullable = false)
 	private String role;
 	
 	

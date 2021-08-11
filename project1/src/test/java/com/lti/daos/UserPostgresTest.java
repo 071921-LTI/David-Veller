@@ -27,7 +27,7 @@ import com.lti.models.User;
 import com.lti.util.ConnectionUtil;
 
 @ExtendWith(MockitoExtension.class)
-public class UserDaoTest {
+public class UserPostgresTest {
 
 	private static MockedStatic<ConnectionUtil> mockedConnectionUtil;
 	private static Connection connection;

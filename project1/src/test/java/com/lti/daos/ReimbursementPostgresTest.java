@@ -28,7 +28,7 @@ import com.lti.models.Reimb;
 import com.lti.util.ConnectionUtil;
 
 @ExtendWith(MockitoExtension.class)
-public class ReimbursementDaoTest {
+public class ReimbursementPostgresTest {
 
 	private static MockedStatic<ConnectionUtil> mockedConnectionUtil;
 	private static Connection connection;

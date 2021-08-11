@@ -1,12 +1,12 @@
 package com.lti.daos;
 
-import com.lti.models.ReimbursementStatus;
+import com.lti.models.ReimbStatus;
 
 public interface ReimbursementStatusDao {
 	
 	int addReimbStatus(String status);
 	int deleteReimbStatus(int id);
-	ReimbursementStatus getReimbStatus(String status);
+	ReimbStatus getReimbStatus(String status);
 	
 
 }
