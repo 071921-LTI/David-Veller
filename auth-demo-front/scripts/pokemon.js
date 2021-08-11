@@ -16,7 +16,7 @@ async function getpoke(){
 
     let myHeaders = new Headers();
     myHeaders.append('Authorize', token);
-    //myHeaders.append("Access-Control-Allow-Origin", "*");
+    myHeaders.append("Access-Control-Request-Headers", "Authorize");
 
     let id = document.getElementById("pokenum").value;
 
