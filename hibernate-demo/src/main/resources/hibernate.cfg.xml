@@ -11,7 +11,7 @@
 
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
 		<property name="hibernate.connection.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
-		<property name="hibernate.show_sql">false</property>
+		<property name="hibernate.show_sql">true</property>
 		<!-- <property name="hibernate.default_schema"></property> -->
 		<property name="hibernate.hbm2ddl.auto">create</property>
 		

@@ -31,16 +31,12 @@ public class Reimb {
 	@Column(name = "reimb_receipt")
 	private byte[] receipt;
 	@ManyToOne @JoinColumn(name = "reimb_author", nullable = false)
-	//@Column(name = "reimb_author", nullable = false)
 	private User author;
-	@ManyToOne @JoinColumn(name = "reimb_resolver", nullable = false)
-	//@Column(name = "reimb_resolver")
+	@ManyToOne @JoinColumn(name = "reimb_resolver")
 	private User resolver;
 	@ManyToOne @JoinColumn(name = "reimb_status_id", nullable = false)
-	//@Column(name = "reimb_status_id", nullable = false)
 	private ReimbStatus status;
 	@ManyToOne @JoinColumn(name = "reimb_type_id", nullable = false)
-	//@Column(name = "reimb_type_id", nullable = false)
 	private ReimbType type;
 	
 	

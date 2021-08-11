@@ -41,7 +41,7 @@ create table if not exists ers_users(
 create table if not exists ers_reimbursement(
 
 	reimb_id SERIAL primary key not null,
-	reimb_amount NUMERIC(10,2) not null,
+	reimb_amount FLOAT not null,
 	reimb_submitted TIMESTAMP not null,
 	reimb_resolved TIMESTAMP,
 	reimb_description VARCHAR(250),

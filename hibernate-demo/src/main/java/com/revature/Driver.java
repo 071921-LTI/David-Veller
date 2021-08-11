@@ -29,6 +29,7 @@ public class Driver {
 		
 		//System.out.println(Hibernate.unproxy(pd.getById(2)));
 		
+		/*
 		Session s = HibernateUtil.getSessionFactory().openSession();
 		
 		Pokemon test = s.load(Pokemon.class, 2);
@@ -36,20 +37,22 @@ public class Driver {
 		System.out.println(Hibernate.unproxy(test));
 		
 		s.close();
+		*/
 		
-		/*
 		System.out.println(pd.getAll());
 		
 		p1.setName("bulby");
 		
+		p1.setId(10);
+		
 		pd.update(p1);
 		
-		System.out.println(pd.getById(1));
+		System.out.println(pd.getAll());
 		
 		pd.delete(p2);
 		
 		System.out.println(pd.getAll());
-		*/
+		
 	}
 
 }
