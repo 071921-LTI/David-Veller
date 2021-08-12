@@ -11,7 +11,6 @@ import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import com.lti.exceptions.NotFoundException;
 import com.lti.models.Reimb;
 import com.lti.models.ReimbStatus;
 import com.lti.models.User;
@@ -82,18 +81,18 @@ public class ReimbursementHibernate implements ReimbursementDao {
 	}
 
 	@Override
-	public void updateReimb(Reimb reimb) throws NotFoundException {
+	public boolean updateReimb(Reimb reimb) {
 
 		try (Session s = HibernateUtil.getSessionFactory().openSession()) {
 			if (s.get(Reimb.class, reimb.getReimbId()) == null) {
-				throw new NotFoundException();
+				return false;
 			} else {
 				Transaction tx = s.beginTransaction();
 				s.merge(reimb);
 				tx.commit();
 
 			}
-
+			return true;
 		}
 
 	}

@@ -6,7 +6,6 @@ import javax.persistence.NoResultException;
 
 import org.hibernate.exception.ConstraintViolationException;
 
-import com.lti.exceptions.NotFoundException;
 import com.lti.models.User;
 
 public interface UserDao {

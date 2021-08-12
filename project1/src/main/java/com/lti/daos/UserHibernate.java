@@ -1,6 +1,5 @@
 package com.lti.daos;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -10,7 +9,6 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.exception.ConstraintViolationException;
 
-import com.lti.exceptions.NotFoundException;
 import com.lti.models.User;
 import com.lti.util.HibernateUtil;
 

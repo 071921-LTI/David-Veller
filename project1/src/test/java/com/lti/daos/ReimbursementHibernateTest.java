@@ -2,8 +2,6 @@ package com.lti.daos;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -22,7 +20,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.lti.exceptions.NotFoundException;
 import com.lti.models.Reimb;
 import com.lti.models.ReimbStatus;
 import com.lti.models.ReimbType;
@@ -134,7 +131,7 @@ public class ReimbursementHibernateTest {
 	
 	@Test
 	@Order(14)
-	public void updateReimb() throws NotFoundException {
+	public void updateReimb() {
 		reimb.setReimbId(3);
 		reimb = rd.getReimb(reimb);
 		reimb.setAuthor(manUser);
@@ -148,7 +145,7 @@ public class ReimbursementHibernateTest {
 	public void updateReimbNoId() {
 		Reimb testReimb = reimb;
 		testReimb.setReimbId(10);
-		assertThrows(NotFoundException.class, () -> rd.updateReimb(testReimb));
+		assertEquals(false, rd.updateReimb(testReimb));
 	}
 	
 	@Test

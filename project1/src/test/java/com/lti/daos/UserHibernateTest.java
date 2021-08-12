@@ -25,7 +25,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.lti.exceptions.NotFoundException;
 import com.lti.models.Reimb;
 import com.lti.models.ReimbStatus;
 import com.lti.models.ReimbType;
