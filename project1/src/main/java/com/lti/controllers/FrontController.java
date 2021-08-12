@@ -40,8 +40,8 @@ public class FrontController extends HttpServlet {
 	public static void addCorsHeader(String requestURI, HttpServletResponse res) {
 		res.addHeader("Access-Control-Allow-Origin", "*");
 		res.addHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
-		res.addHeader("Access-Control-Allow-Headers", "Content-Type, Accept, Authorize");
-		res.addHeader("Access-Control-Expose-Headers", "Content-Type, Accept, Authorize");
+		res.addHeader("Access-Control-Allow-Headers", "Content-Type, Accept, Authorization");
+		res.addHeader("Access-Control-Expose-Headers", "Content-Type, Accept, Authorization");
 	}
 
 }

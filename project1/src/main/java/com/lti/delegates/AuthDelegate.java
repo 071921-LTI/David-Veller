@@ -63,7 +63,6 @@ public class AuthDelegate implements Delegatable{
 				
 				InputStream request = req.getInputStream();
 				User userTemp = new ObjectMapper().readValue(request, User.class);
-				User user = null;
 				String token = null;
 				
 				try {
@@ -83,11 +82,11 @@ public class AuthDelegate implements Delegatable{
 				
 				InputStream request = req.getInputStream();
 				User userTemp = new ObjectMapper().readValue(request, User.class);
-				User user = null;
 				String token = null;
 				
 				try {
 					token = as.register(userTemp.getUsername(), userTemp.getPassword(), userTemp.getFirstName(), userTemp.getLastName(), userTemp.getEmail(), userTemp.getRole().getRole());
+					res.setStatus(201);
 				} catch (ConstraintViolationException e) {
 					token = "username";
 					res.setStatus(400);
