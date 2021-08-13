@@ -57,4 +57,14 @@ public class ReimbursementServiceImpl implements ReimbursementService{
 		return rd.getReimbByUser(username);
 	}
 
+	@Override
+	public List<Reimb> getAllReimb() {
+		return rd.getAllReimb();
+	}
+
+	@Override
+	public Reimb getReimb(int id) {
+		return rd.getReimb(new Reimb(id));
+	}
+
 }

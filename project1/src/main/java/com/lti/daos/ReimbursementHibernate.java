@@ -134,4 +134,13 @@ public class ReimbursementHibernate implements ReimbursementDao {
 
 	}
 
+	@Override
+	public List<Reimb> getAllReimb() {
+		List<Reimb> reimbs = null;
+		try (Session s = HibernateUtil.getSessionFactory().openSession()) {
+			reimbs = s.createQuery("FROM Reimb", Reimb.class).getResultList();
+		}
+		return reimbs;
+	}
+
 }

@@ -91,5 +91,20 @@ public class ReimbursementServiceTest {
 		Mockito.when(rd.getReimbByUser("newUser")).thenReturn(reimbs);
 		assertEquals(reimbs, reimbService.getReimbByUser("newUser"));
 	}
+	
+	@Test
+	public void getAll() {
+		List<Reimb> reimbs = new ArrayList<>();
+		reimbs.add(reimb);
+		Mockito.when(rd.getAllReimb()).thenReturn(reimbs);
+		assertEquals(reimbs, reimbService.getAllReimb());
+	}
+	
+	@Test
+	public void getReimb() {
+		Reimb newr = new Reimb(5);
+		Mockito.when(rd.getReimb(newr)).thenReturn(reimb);
+		assertEquals(reimb, reimbService.getReimb(5));
+	}
 
 }

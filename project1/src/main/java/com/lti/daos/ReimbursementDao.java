@@ -16,5 +16,5 @@ public interface ReimbursementDao {
 	List<Reimb> getReimbByUser(String username);
 	void deleteReimb(Reimb reimb);
 	List<Reimb> getReimbByStatusAndUser(String status, String user);
-	
+	List<Reimb> getAllReimb();
 }

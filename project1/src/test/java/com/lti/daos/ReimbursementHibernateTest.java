@@ -179,4 +179,10 @@ public class ReimbursementHibernateTest {
 		assertEquals(null, rd.getReimb(reimb));
 	}
 	
+	@Test
+	@Order(16)
+	public void getAll() {
+		assertEquals(3, rd.getAllReimb().size());
+	}
+	
 }
