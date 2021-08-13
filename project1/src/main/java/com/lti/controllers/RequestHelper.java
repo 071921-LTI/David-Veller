@@ -31,7 +31,7 @@ public class RequestHelper {
 			}
 
 			switch (path) {
-			case "users":
+			case "user":
 				ud.process(req, res);
 				break;
 			case "auth":

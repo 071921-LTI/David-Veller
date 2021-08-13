@@ -23,7 +23,7 @@ function login(){
 
             sessionStorage.setItem('token', authToken);
 
-            window.location.href = 'dashboard.html';
+            window.location.href = 'view.html';
 
         } else if (xhr.readyState === 4){
             let error = xhr.getResponseHeader("Authorization");

@@ -1,7 +1,10 @@
 package com.lti.delegates;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -10,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lti.models.Reimb;
+import com.lti.models.ReimbStatus;
 import com.lti.models.User;
 import com.lti.services.AuthService;
 import com.lti.services.AuthServiceImpl;
@@ -55,23 +59,22 @@ public class ReimbursementDelegate implements Delegatable {
 		if (user != null) {
 			String pathNext = (String) req.getAttribute("pathNext");
 			if (pathNext != null) {
-				//checks path for /view or /view/reimbId
+				// checks path for /view or /view/reimbId
 				if (pathNext.indexOf("/") == -1 && pathNext.equals("view")) {
-					
+
 					List<Reimb> reimbs;
-					
+
 					if (user.getRole().getRole().equals("manager")) {
 						reimbs = rs.getAllReimb();
-					}else {
+					} else {
 						reimbs = rs.getReimbByUser(user.getUsername());
 					}
-					
+
 					res.setStatus(200);
-					res.addHeader("Authorization", token);
 					try (PrintWriter pw = res.getWriter()) {
 						pw.write(new ObjectMapper().writeValueAsString(reimbs));
 					}
-					
+
 				} else {
 					String[] path = pathNext.split("/");
 					if (!path[0].equals("view")) {
@@ -80,7 +83,6 @@ public class ReimbursementDelegate implements Delegatable {
 						int reimbId = Integer.valueOf(path[1]);
 						Reimb reimb = rs.getReimb(reimbId);
 						res.setStatus(200);
-						res.addHeader("Authorization", token);
 						try (PrintWriter pw = res.getWriter()) {
 							pw.write(new ObjectMapper().writeValueAsString(reimb));
 						}
@@ -89,7 +91,7 @@ public class ReimbursementDelegate implements Delegatable {
 			} else {
 				res.sendError(400, "Path not found");
 			}
-		}else {
+		} else {
 			res.sendError(400, "Bad token");
 		}
 
@@ -103,8 +105,39 @@ public class ReimbursementDelegate implements Delegatable {
 
 	@Override
 	public void handlePost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-
+		String token = req.getHeader("Authorization");
+		String username = as.authorize(token);
+		User user = us.getUserByUsername(username);
+		
+		if (user != null) {
+			String pathNext = (String) req.getAttribute("pathNext");
+			if (pathNext != null) {
+				if (pathNext.equals("request")) {
+					
+					InputStream request = req.getInputStream();
+					Reimb reimb = new ObjectMapper().readValue(request, Reimb.class);
+					
+					ReimbStatus status = new ReimbStatus(1, "pending");
+					
+					reimb.setAuthor(user);
+					reimb.setSubmitted(Timestamp.valueOf(LocalDateTime.now()));
+					reimb.setStatus(status);
+					
+					if (rs.addReimb(reimb)) {
+						res.setStatus(201);
+					}else {
+						res.sendError(400, "Could not add reimbursement");
+					}
+					
+				}else {
+					res.sendError(400, "Path invalid");
+				}
+			}else {
+				res.sendError(400, "Path not found");
+			}
+		}else {
+			res.sendError(400, "Bad token");
+		}
 	}
 
 	@Override

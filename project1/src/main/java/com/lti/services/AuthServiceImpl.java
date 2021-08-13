@@ -26,7 +26,7 @@ public class AuthServiceImpl implements AuthService {
 
 	UserDao ud = UserHibernate.getUserHibernate();
 
-	private static String tokenize(User user) {
+	public static String tokenize(User user) {
 		return user.getUsername() + ":" + user.getRole().getRole();
 	}
 
