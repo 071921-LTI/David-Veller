@@ -99,7 +99,44 @@ public class ReimbursementDelegate implements Delegatable {
 
 	@Override
 	public void handlePut(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		String token = req.getHeader("Authorization");
+		String username = as.authorize(token);
+		User user = us.getUserByUsername(username);
+		
+		if (user != null) {
+			String pathNext = (String) req.getAttribute("pathNext");
+			if (pathNext != null) {
+				if (pathNext.equals("update")) {
+					
+					InputStream request = req.getInputStream();
+					Reimb reimb = new ObjectMapper().readValue(request, Reimb.class);
+					
+					System.out.println(reimb.getStatus());
+					
+					//ReimbStatus status = new ReimbStatus(1, "pending");
+					
+					reimb.setResolver(user);
+					reimb.setResolved(Timestamp.valueOf(LocalDateTime.now()));
+					
+					if (rs.updateReimb(reimb)) {
+						res.setStatus(200);
+					}else {
+						res.sendError(400, "Could not update reimbursement");
+						System.out.println("could not update");
+					}
+					
+				}else {
+					res.sendError(400, "Path invalid");
+					System.out.println("could not path");
+				}
+			}else {
+				res.sendError(400, "Path not found");
+				System.out.println("could not path");
+			}
+		}else {
+			res.sendError(400, "Bad token");
+			System.out.println("could not token");
+		}
 
 	}
 

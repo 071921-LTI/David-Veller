@@ -5,3 +5,11 @@
 #success{
   color: green;
 }
+
+#approve{
+  background-color: lightgreen;
+}
+
+#deny{
+  background-color: lightcoral;
+}

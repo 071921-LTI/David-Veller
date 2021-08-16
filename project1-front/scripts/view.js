@@ -6,6 +6,8 @@ if(!token){
 
 document.getElementById("status").addEventListener('change', filterStatus);
 document.getElementById("type").addEventListener('change', filterType);
+document.getElementById("submitted").addEventListener('keyup', filterSubmitted);
+document.getElementById("resolved").addEventListener('keyup', filterResolved);
 
 function getReimbs() {
 
@@ -29,6 +31,9 @@ function getReimbs() {
 
                 let tr = document.createElement('tr');
                 tr.style.display = "";
+                tr.onclick = openReimb;
+                tr.className = "clickRows";
+                tr.setAttribute("id", response[i].reimbId);
                 let subBy = document.createElement('td');
                 let amount = document.createElement('td');
                 let timeSub = document.createElement('td');
@@ -78,6 +83,12 @@ function getReimbs() {
 
 }
 
+function openReimb(event){
+    sessionStorage.setItem("reimbId",(event.target.parentElement.id));
+    newWindow = window.open("reimb.html",null, "location=no");
+    
+}
+
 
 function getResolver(resolver) {
     if (resolver == null) {
@@ -114,7 +125,11 @@ function filterStatus(){
         let statusData = rows[i].getElementsByTagName("td")[5];
         if (status == '--'){
             rows[i].style.display = "";
-        }else if (statusData.innerHTML ==  status){
+        }else if ("resolved" ==  status){
+            if (statusData.innerHTML.toLowerCase() == "approved" || statusData.innerHTML.toLowerCase() == "denied"){
+                rows[i].style.display = "";
+            }
+        }else if (status == statusData.innerHTML.toLowerCase()){
             rows[i].style.display = "";
         }
     }
@@ -133,6 +148,36 @@ function filterType(){
         if (status == '--'){
             rows[i].style.display = "";
         }else if (statusData.innerHTML ==  status){
+            rows[i].style.display = "";
+        }
+    }
+}
+
+function filterSubmitted(){
+    let submitted = document.getElementById("submitted").value;
+    submitted = submitted.toUpperCase();
+    let table = document.getElementById("reimbTable");
+    let rows = table.getElementsByTagName("tr");
+    for (i=1; i < rows.length;i++){
+        rows[i].style.display = "none";
+        let style = rows[i].style.display;
+        let subData = rows[i].getElementsByTagName("td")[0];
+        if (subData.innerHTML.toUpperCase().indexOf(submitted) > -1){
+            rows[i].style.display = "";
+        }
+    }
+}
+
+function filterResolved(){
+    let resolved = document.getElementById("resolved").value;
+    resolved = resolved.toUpperCase();
+    let table = document.getElementById("reimbTable");
+    let rows = table.getElementsByTagName("tr");
+    for (i=1; i < rows.length;i++){
+        rows[i].style.display = "none";
+        let style = rows[i].style.display;
+        let resData = rows[i].getElementsByTagName("td")[4];
+        if (resData.innerHTML.toUpperCase().indexOf(resolved) > -1){
             rows[i].style.display = "";
         }
     }
