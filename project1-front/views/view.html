@@ -47,6 +47,7 @@
     
     <!-- Custom styles for this template -->
     <link href="../stylesheets/sidebars.css" rel="stylesheet">
+    <link href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css" rel="stylesheet">
   </head>
   <body>
     
@@ -146,18 +147,32 @@
     </a>
   </div>
   <div class="b-example-divider"></div>
+
+
   <div class="container">
     <h2>Reimbursements</h2>           
-    <table class="table table-bordered">
+    <table id="reimbTable" class="table table-bordered" data-filter-control="true">
       <thead>
         <tr>
-          <th>Submitted By</th>
+          <th><input type="text" placeholder="Submitted By" id="submitted"></th>
           <th>Amount</th>
           <th>Time Submitted</th>
           <th>Time Resolved</th>
-          <th>Resolved By</th>
-          <th>Status</th>
-          <th>Type</th>
+          <th><input type="text" placeholder="Resolved By" id="resolved"></th>
+          <th><label for="sel1">Status</label>
+            <select class="form-control" id="status">
+              <option>--</option>
+              <option>Pending</option>
+              <option>Resolved</option>
+            </select></th>
+          <th><label for="sel1">Type</label>
+            <select class="form-control" id="type">
+              <option>--</option>
+              <option>Lodging</option>
+              <option>Travel</option>
+              <option>Food</option>
+              <option>Other</option>
+            </select></th>
         </tr>
       </thead>
       <tbody id="tableBody">
@@ -177,6 +192,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <script src="../scripts/view.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js" integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous"></script>
-
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
   </body>
 </html>

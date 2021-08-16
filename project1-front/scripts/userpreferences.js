@@ -20,10 +20,6 @@ user = getUser();
 
 function update() {
 
-    let userRole = {
-        roleId: user.role.roleId,
-        role: user.role.role
-    }
 
     let newUser = {
         username: username.value,
@@ -31,8 +27,32 @@ function update() {
         firstName: first.value,
         lastName: last.value,
         email: email.value,
-        role: userRole
     }
+
+    let xhr = new XMLHttpRequest();
+
+    xhr.open('PUT', url);
+
+    xhr.onreadystatechange = function(){
+        if (xhr.readyState === 4 && xhr.status >= 200 && xhr.status < 300){
+
+            let authToken = xhr.getResponseHeader("Authorization");
+
+            sessionStorage.removeItem('token');
+            sessionStorage.setItem('token', authToken);
+            document.getElementById("success").innerHTML = "Update success!";
+
+        }else if (xhr.readyState === 4){
+           document.getElementById("error").innerHTML = "There was an error.";
+        }
+    }
+
+    let reqBody = JSON.stringify(newUser);
+
+    xhr.setRequestHeader("Authorization", token);
+
+    xhr.send(reqBody);
+
 
 }
 
@@ -49,7 +69,6 @@ function getUser() {
 
             let response = xhr.responseText;
             let user = JSON.parse(response);
-            console.log(user);
             setValues(user);
 
         } else if (xhr.readyState === 4) {

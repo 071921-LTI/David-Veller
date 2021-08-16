@@ -1,4 +1,5 @@
 document.getElementById('submit').addEventListener('click', login);
+sessionStorage.removeItem('token');
 
 function login(){
 

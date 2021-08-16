@@ -55,7 +55,6 @@ function register(){
 
     let reqBody = JSON.stringify(user);
 
-    console.log(reqBody);
 
     xhr.send(reqBody);
 }

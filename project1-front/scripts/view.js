@@ -4,6 +4,8 @@ if(!token){
     window.location.href="login.html";
 }
 
+document.getElementById("status").addEventListener('change', filterStatus);
+document.getElementById("type").addEventListener('change', filterType);
 
 function getReimbs() {
 
@@ -21,8 +23,12 @@ function getReimbs() {
             response = JSON.parse(response);
             let tbody = document.getElementById("tableBody");
 
+            //var da = [];
+
             for (i = response.length-1; i >= 0; i--) {
+
                 let tr = document.createElement('tr');
+                tr.style.display = "";
                 let subBy = document.createElement('td');
                 let amount = document.createElement('td');
                 let timeSub = document.createElement('td');
@@ -30,6 +36,7 @@ function getReimbs() {
                 let resBy = document.createElement('td');
                 let status = document.createElement('td');
                 let type = document.createElement('td');
+
                 subBy.innerHTML = response[i].author.firstName + " " + response[i].author.lastName;
                 amount.innerHTML = response[i].amount;
                 timeSub.innerHTML = getTimestamp(response[i].submitted);
@@ -37,6 +44,19 @@ function getReimbs() {
                 resBy.innerHTML = getResolver(response[i].resolver);
                 status.innerHTML = response[i].status.status;
                 type.innerHTML = response[i].type.type;
+                /*
+                let reimb = {
+                    "subBy":response[i].author.firstName + " " + response[i].author.lastName,
+                    "amount":response[i].amount,
+                    "timeSub":getTimestamp(response[i].submitted),
+                    "timeRes":getTimestamp(response[i].resolved),
+                    "resBy":getResolver(response[i].resolver),
+                    "status":response[i].status.status,
+                    "type":response[i].type.type
+                }
+
+                da.push(reimb);
+                */
                 tr.appendChild(subBy);
                 tr.appendChild(amount);
                 tr.appendChild(timeSub);
@@ -57,6 +77,7 @@ function getReimbs() {
     xhr.send();
 
 }
+
 
 function getResolver(resolver) {
     if (resolver == null) {
@@ -79,6 +100,41 @@ function getTimestamp(timestamp) {
         var formattedTime = hours + ":" + minutes;
         formattedDate = formattedDate + " " + formattedTime;
         return formattedDate;
+    }
+}
+
+function filterStatus(){
+    let status = document.getElementById("status").value;
+    status = status.toLowerCase();
+    let table = document.getElementById("reimbTable");
+    let rows = table.getElementsByTagName("tr");
+    for (i=1; i < rows.length;i++){
+        rows[i].style.display = "none";
+        let style = rows[i].style.display;
+        let statusData = rows[i].getElementsByTagName("td")[5];
+        if (status == '--'){
+            rows[i].style.display = "";
+        }else if (statusData.innerHTML ==  status){
+            rows[i].style.display = "";
+        }
+    }
+
+}
+
+function filterType(){
+    let status = document.getElementById("type").value;
+    status = status.toUpperCase();
+    let table = document.getElementById("reimbTable");
+    let rows = table.getElementsByTagName("tr");
+    for (i=1; i < rows.length;i++){
+        rows[i].style.display = "none";
+        let style = rows[i].style.display;
+        let statusData = rows[i].getElementsByTagName("td")[6];
+        if (status == '--'){
+            rows[i].style.display = "";
+        }else if (statusData.innerHTML ==  status){
+            rows[i].style.display = "";
+        }
     }
 }
 

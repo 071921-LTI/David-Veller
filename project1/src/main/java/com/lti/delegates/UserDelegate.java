@@ -72,12 +72,6 @@ public class UserDelegate implements Delegatable{
 
 	@Override
 	public void handlePut(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void handlePost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		String token = req.getHeader("Authorization");
 		String username = as.authorize(token);
 		User user = us.getUserByUsername(username);
@@ -90,6 +84,7 @@ public class UserDelegate implements Delegatable{
 					User userTemp = new ObjectMapper().readValue(request, User.class);
 					
 					userTemp.setUserId(user.getUserId());
+					userTemp.setRole(user.getRole());
 					if (us.updateUser(userTemp)) {
 						res.setStatus(200);
 						token = AuthServiceImpl.tokenize(userTemp);
@@ -108,6 +103,12 @@ public class UserDelegate implements Delegatable{
 		} else {
 			res.sendError(400, "Bad token");
 		}
+		
+	}
+
+	@Override
+	public void handlePost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		
 		
 	}
 		
