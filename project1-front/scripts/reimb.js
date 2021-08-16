@@ -8,8 +8,8 @@ document.getElementById("approve").addEventListener('click', approve);
 document.getElementById("deny").addEventListener('click', deny);
 
 getReimb();
-var approvedReimb;
-var deniedReimb;
+let approvedReimb;
+let deniedReimb;
 
 function approve() {
 
@@ -97,8 +97,19 @@ function getReimb() {
             tr.appendChild(descp);
             tr.appendChild(receipt);
             tbody.appendChild(tr);
-            approveReimb(response);
+            //approveReimb(response);
+            let reimbStatus = {
+                statusId : 2,
+                status: "approved"
+            }
+
+            approvedReimb = response;
+            approvedReimb.status = reimbStatus;
+            console.log("this is in get reimb");
+            console.log(approvedReimb);
             denyReimb(response);
+            console.log("after deny");
+            console.log(approvedReimb);
 
 
         } else if (xhr.readyState === 4) {
@@ -112,14 +123,18 @@ function getReimb() {
 
 function approveReimb(reimb){
 
+    console.log("in approve" + reimb.status.status);
+
     approvedReimb = reimb;
 
-    reimbStatus = {
+    let reimbStatus = {
         statusId : 2,
         status: "approved"
     }
 
     approvedReimb.status = reimbStatus;
+
+    console.log("set status" + approvedReimb.status.status);
 
 }
 
@@ -127,7 +142,7 @@ function denyReimb(reimb){
 
     deniedReimb = reimb;
 
-    reimbStatus = {
+    let reimbStatus = {
         statusId : 3,
         status: "denied"
     }
