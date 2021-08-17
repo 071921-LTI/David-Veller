@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +21,7 @@ import com.lti.services.AuthServiceImpl;
 public class AuthDelegate implements Delegatable{
 	
 	AuthService as = AuthServiceImpl.getAuthService();
+	private static Logger log = LogManager.getRootLogger();
 
 	@Override
 	public void process(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -67,12 +70,15 @@ public class AuthDelegate implements Delegatable{
 				
 				try {
 					token = as.login(userTemp.getUsername(), userTemp.getPassword());
+					log.info("Succesful login with token: " + token);
 					res.setStatus(200);
 				} catch (NoResultException e) {
 					token = "username";
+					log.warn("Login attemp with wrong username");
 					res.setStatus(400);
 				} catch (LoginException e) {
 					token = "password";
+					log.warn("Login attempt with wrong password");
 					res.setStatus(400);
 				}
 				
@@ -87,11 +93,14 @@ public class AuthDelegate implements Delegatable{
 				try {
 					token = as.register(userTemp.getUsername(), userTemp.getPassword(), userTemp.getFirstName(), userTemp.getLastName(), userTemp.getEmail(), userTemp.getRole().getRole());
 					res.setStatus(201);
+					log.info("Succesful register with token: " + token);
 				} catch (ConstraintViolationException e) {
 					token = "username";
+					log.warn("Register attemp with bad username");
 					res.setStatus(400);
 				} catch (LoginException e) {
 					token = "role";
+					log.warn("Register attemp with bad role");
 					res.setStatus(400);
 				}
 				
@@ -99,9 +108,11 @@ public class AuthDelegate implements Delegatable{
 				
 			}else {
 				res.sendError(400, "Path invalid");
+				log.error("Bad path");
 			}
 		}else {
 			res.sendError(400, "Path not found");
+			log.error("Bad path");
 		}
 		
 	}

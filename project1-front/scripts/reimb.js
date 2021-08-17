@@ -15,26 +15,25 @@ function approve() {
 
 
 
-        let xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
 
-        let url = "http://localhost:8080/project1/reimb/update";
+    let url = "http://localhost:8080/project1/reimb/update";
 
-        xhr.open("PUT", url);
+    xhr.open("PUT", url);
 
-        xhr.setRequestHeader("Authorization", token);
+    xhr.setRequestHeader("Authorization", token);
 
-        xhr.onreadystatechange = function () {
+    xhr.onreadystatechange = function () {
 
-            if (xhr.readyState === 4 && xhr.status >= 200 && xhr.status < 300) {
-                //window.close();
-                console.log(approvedReimb);
-            } else if (xhr.readyState === 4) {
-                console.log("Something went wrong");
-            }
-
+        if (xhr.readyState === 4 && xhr.status >= 200 && xhr.status < 300) {
+            window.close();
+        } else if (xhr.readyState === 4) {
+            console.log("Something went wrong");
         }
 
-        xhr.send(JSON.stringify(approvedReimb));
+    }
+
+    xhr.send(JSON.stringify(approvedReimb));
 
 
 }
@@ -97,20 +96,8 @@ function getReimb() {
             tr.appendChild(descp);
             tr.appendChild(receipt);
             tbody.appendChild(tr);
-            //approveReimb(response);
-            let reimbStatus = {
-                statusId : 2,
-                status: "approved"
-            }
-
-            approvedReimb = response;
-            approvedReimb.status = reimbStatus;
-            console.log("this is in get reimb");
-            console.log(approvedReimb);
+            approveReimb(response);
             denyReimb(response);
-            console.log("after deny");
-            console.log(approvedReimb);
-
 
         } else if (xhr.readyState === 4) {
             console.log("Something went wrong");
@@ -121,39 +108,49 @@ function getReimb() {
 
 }
 
-function approveReimb(reimb){
-
-    console.log("in approve" + reimb.status.status);
-
-    approvedReimb = reimb;
-
+function approveReimb(reimb) {
     let reimbStatus = {
-        statusId : 2,
+        statusId: 2,
         status: "approved"
     }
 
-    approvedReimb.status = reimbStatus;
+    approvedReimb = {
+        reimbId: reimb.reimbId,
+        amount: reimb.amount,
+        submitted: reimb.submitted,
+        resolved: reimb.resovled,
+        description: reimb.description,
+        receipt: reimb.receipt,
+        author: reimb.author,
+        resolver: reimb.resolver,
+        status: reimbStatus,
+        type: reimb.type
+    }
 
-    console.log("set status" + approvedReimb.status.status);
+
 
 }
 
-function denyReimb(reimb){
-
-    deniedReimb = reimb;
+function denyReimb(reimb) {
 
     let reimbStatus = {
-        statusId : 3,
+        statusId: 3,
         status: "denied"
     }
 
-    deniedReimb.status = reimbStatus;
+    deniedReimb = {
+        reimbId: reimb.reimbId,
+        amount: reimb.amount,
+        submitted: reimb.submitted,
+        resolved: reimb.resovled,
+        description: reimb.description,
+        receipt: reimb.receipt,
+        author: reimb.author,
+        resolver: reimb.resolver,
+        status: reimbStatus,
+        type: reimb.type
+    }
 
 }
 
 checkManager();
-/*
-window.unload = refreshParent;
-function refreshParent(){
-    window.opener.location.reload();
-}*/

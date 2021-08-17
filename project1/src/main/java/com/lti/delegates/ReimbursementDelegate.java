@@ -11,6 +11,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lti.models.Reimb;
 import com.lti.models.ReimbStatus;
@@ -27,6 +30,7 @@ public class ReimbursementDelegate implements Delegatable {
 	ReimbursementService rs = ReimbursementServiceImpl.getReimbursementService();
 	AuthService as = AuthServiceImpl.getAuthService();
 	UserService us = UserServiceImpl.getUserService();
+	private static Logger log = LogManager.getRootLogger();
 
 	@Override
 	public void process(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -79,6 +83,7 @@ public class ReimbursementDelegate implements Delegatable {
 					String[] path = pathNext.split("/");
 					if (!path[0].equals("view")) {
 						res.sendError(400, "Path Error");
+						log.error("Bad path");
 					} else {
 						int reimbId = Integer.valueOf(path[1]);
 						Reimb reimb = rs.getReimb(reimbId);
@@ -90,9 +95,11 @@ public class ReimbursementDelegate implements Delegatable {
 				}
 			} else {
 				res.sendError(400, "Path not found");
+				log.error("Bad path");
 			}
 		} else {
 			res.sendError(400, "Bad token");
+			log.error("Bad token");
 		}
 
 	}
@@ -111,8 +118,6 @@ public class ReimbursementDelegate implements Delegatable {
 					InputStream request = req.getInputStream();
 					Reimb reimb = new ObjectMapper().readValue(request, Reimb.class);
 					
-					System.out.println(reimb.getStatus());
-					
 					//ReimbStatus status = new ReimbStatus(1, "pending");
 					
 					reimb.setResolver(user);
@@ -120,22 +125,23 @@ public class ReimbursementDelegate implements Delegatable {
 					
 					if (rs.updateReimb(reimb)) {
 						res.setStatus(200);
+						log.info("Reimb with ID " + reimb.getReimbId() + " updated.");
 					}else {
 						res.sendError(400, "Could not update reimbursement");
-						System.out.println("could not update");
+						log.error("Could not update reimb");
 					}
 					
 				}else {
 					res.sendError(400, "Path invalid");
-					System.out.println("could not path");
+					log.error("Bad path");
 				}
 			}else {
 				res.sendError(400, "Path not found");
-				System.out.println("could not path");
+				log.error("Bad path");
 			}
 		}else {
 			res.sendError(400, "Bad token");
-			System.out.println("could not token");
+			log.error("Bad token");
 		}
 
 	}
@@ -162,18 +168,23 @@ public class ReimbursementDelegate implements Delegatable {
 					
 					if (rs.addReimb(reimb)) {
 						res.setStatus(201);
+						log.info("New reimb added");
 					}else {
 						res.sendError(400, "Could not add reimbursement");
+						log.error("Could not add reimb");
 					}
 					
 				}else {
 					res.sendError(400, "Path invalid");
+					log.error("Bad path");
 				}
 			}else {
 				res.sendError(400, "Path not found");
+				log.error("Bad path");
 			}
 		}else {
 			res.sendError(400, "Bad token");
+			log.error("Bad token");
 		}
 	}
 

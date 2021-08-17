@@ -8,6 +8,17 @@ document.getElementById("status").addEventListener('change', filterStatus);
 document.getElementById("type").addEventListener('change', filterType);
 document.getElementById("submitted").addEventListener('keyup', filterSubmitted);
 document.getElementById("resolved").addEventListener('keyup', filterResolved);
+document.getElementById("viewempl").addEventListener('click', openEmployees);
+
+checkManager();
+
+function checkManager() {
+
+    if (token.split(":")[1] == "manager") {
+        document.getElementById("viewempl").style.display = "";
+    }
+
+}
 
 function getReimbs() {
 
@@ -85,8 +96,11 @@ function getReimbs() {
 
 function openReimb(event){
     sessionStorage.setItem("reimbId",(event.target.parentElement.id));
-    newWindow = window.open("reimb.html",null, "location=no");
-    
+    windowRef = window.open("reimb.html",null, "location=no");
+}
+
+function openEmployees(){
+    windowRef = window.open("employees.html",null, "location=no");
 }
 
 
