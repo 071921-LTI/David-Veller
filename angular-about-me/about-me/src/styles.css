@@ -1,0 +1,11 @@
+body{
+    text-align: center;
+    background: linear-gradient(45deg, aqua, black);
+    color: rgb(250, 114, 109);
+    font-family: Papyrus;
+    font-size: 24px;
+}
+
+ul{
+    list-style-type: none;
+}

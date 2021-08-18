@@ -150,7 +150,7 @@
 
 
   <div class="a-example-divider"></div>
-<div class="container">
+<div class="container" style="margin-top: 2%;">
   <form id="regForm">
     <h1 class="h3 mb-3 fw-normal">Reimbursement Request</h1>
 
@@ -164,8 +164,9 @@
       <input type="number" min="0" step=".01" class="form-control" id="amount" placeholder="Amount">
       <label for="amount">Amount</label>
     </div>
+    <br>
     <div class="form-floating">
-      <textarea id="description" rows="5" cols="35" maxlength="250" placeholder="Description"></textarea>
+      <textarea id="description" rows="5" cols="42" maxlength="250" placeholder="Description"></textarea>
     </div>
     <div class="form-group">
         <label for="sel1">Reimbursement Type</label>
@@ -175,8 +176,13 @@
           <option>Food</option>
           <option>Other</option>
         </select>
-      </div>
-
+    </div>
+    <br>
+    <div>
+      Upload receipt
+      <input type="file" accept=".jpg" class="form-control" id="receipt" placeholder="receipt">
+    </div>
+    <br>
     <button class="w-100 btn btn-lg btn-primary" type="button" id="submit">Submit</button>
     </form>
 </div>

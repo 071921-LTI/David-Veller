@@ -91,6 +91,16 @@ body {
   .scrollarea {
     overflow-y: auto;
   }
+
+  li:hover { 
+    background-color: rgb(13,110,253);
+    cursor: pointer
+ }
+
+ li{
+   transition-property: background-color;
+   transition-duration: 0.2s;
+ }
   
   .fw-semibold { font-weight: 600; }
   .lh-tight { line-height: 1.25; }

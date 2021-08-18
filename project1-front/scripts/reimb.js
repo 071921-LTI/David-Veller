@@ -8,6 +8,7 @@ document.getElementById("approve").addEventListener('click', approve);
 document.getElementById("deny").addEventListener('click', deny);
 
 getReimb();
+checkManager();
 let approvedReimb;
 let deniedReimb;
 
@@ -93,6 +94,13 @@ function getReimb() {
             let descp = document.createElement('td');
             let receipt = document.createElement('td');
             descp.innerHTML = response.description;
+            if (response.receipt != null) {
+                let image = document.createElement('img');
+                image.src = 'data:image/jpeg;base64,' + btoa(response.receipt);
+                receipt.appendChild(image);
+            }else{
+                receipt.innerHTML = "No recept attached";
+            }
             tr.appendChild(descp);
             tr.appendChild(receipt);
             tbody.appendChild(tr);
@@ -153,4 +161,3 @@ function denyReimb(reimb) {
 
 }
 
-checkManager();
