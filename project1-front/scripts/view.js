@@ -37,7 +37,6 @@ function getReimbs() {
             response = JSON.parse(response);
             let tbody = document.getElementById("tableBody");
 
-            //var da = [];
 
             for (i = response.length-1; i >= 0; i--) {
 
@@ -61,19 +60,7 @@ function getReimbs() {
                 resBy.innerHTML = getResolver(response[i].resolver);
                 status.innerHTML = response[i].status.status;
                 type.innerHTML = response[i].type.type;
-                /*
-                let reimb = {
-                    "subBy":response[i].author.firstName + " " + response[i].author.lastName,
-                    "amount":response[i].amount,
-                    "timeSub":getTimestamp(response[i].submitted),
-                    "timeRes":getTimestamp(response[i].resolved),
-                    "resBy":getResolver(response[i].resolver),
-                    "status":response[i].status.status,
-                    "type":response[i].type.type
-                }
-
-                da.push(reimb);
-                */
+                
                 tr.appendChild(subBy);
                 tr.appendChild(amount);
                 tr.appendChild(timeSub);
@@ -152,12 +139,15 @@ function filterAll(){
         } else if(status != statusData && status != '--'){
             rows[i].style.display = "none";
         }
+
         if(type != typeData && type != '--'){
             rows[i].style.display = "none";
         }
+
         if(!(subData.indexOf(submitted) > -1)){
             rows[i].style.display = "none";
         }
+        
         if(!(resData.indexOf(resolved) > -1)){
             rows[i].style.display = "none";
         }

@@ -25,6 +25,7 @@ function fileCheck() {
             array = new Uint8Array(arrayBuffer),
             binaryString = String.fromCharCode.apply(null, array);
             receiptImg = toUTF8Array(binaryString);
+            //document.getElementById("output").src = 'data:image/jpeg;base64,' + btoa(binaryString);
             console.log(typeof(receiptImg));
     }
     reader.readAsArrayBuffer(file);
