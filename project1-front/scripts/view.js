@@ -4,13 +4,14 @@ if(!token){
     window.location.href="login.html";
 }
 
-document.getElementById("status").addEventListener('change', filterStatus);
-document.getElementById("type").addEventListener('change', filterType);
-document.getElementById("submitted").addEventListener('keyup', filterSubmitted);
-document.getElementById("resolved").addEventListener('keyup', filterResolved);
+document.getElementById("status").addEventListener('change', filterAll);
+document.getElementById("type").addEventListener('change', filterAll);
+document.getElementById("submitted").addEventListener('keyup', filterAll);
+document.getElementById("resolved").addEventListener('keyup', filterAll);
 document.getElementById("viewempl").addEventListener('click', openEmployees);
 
 checkManager();
+getReimbs();
 
 function checkManager() {
 
@@ -128,74 +129,37 @@ function getTimestamp(timestamp) {
     }
 }
 
-function filterStatus(){
-    let status = document.getElementById("status").value;
-    status = status.toLowerCase();
+function filterAll(){
+    let status = document.getElementById("status").value.toUpperCase();
+    let type = document.getElementById("type").value.toUpperCase();
+    let submitted = document.getElementById("submitted").value.toUpperCase();
+    let resolved = document.getElementById("resolved").value.toUpperCase();
+
     let table = document.getElementById("reimbTable");
     let rows = table.getElementsByTagName("tr");
     for (i=1; i < rows.length;i++){
-        rows[i].style.display = "none";
-        let style = rows[i].style.display;
-        let statusData = rows[i].getElementsByTagName("td")[5];
-        if (status == '--'){
-            rows[i].style.display = "";
-        }else if ("resolved" ==  status){
-            if (statusData.innerHTML.toLowerCase() == "approved" || statusData.innerHTML.toLowerCase() == "denied"){
-                rows[i].style.display = "";
+        rows[i].style.display = "";
+
+        let subData = rows[i].getElementsByTagName("td")[0].innerHTML.toUpperCase();
+        let resData = rows[i].getElementsByTagName("td")[4].innerHTML.toUpperCase();
+        let statusData = rows[i].getElementsByTagName("td")[5].innerHTML.toUpperCase();
+        let typeData = rows[i].getElementsByTagName("td")[6].innerHTML.toUpperCase();
+
+        if ("RESOLVED" == status){
+            if (statusData == "PENDING"){
+                rows[i].style.display = "none"; 
             }
-        }else if (status == statusData.innerHTML.toLowerCase()){
-            rows[i].style.display = "";
+        } else if(status != statusData && status != '--'){
+            rows[i].style.display = "none";
         }
-    }
-
-}
-
-function filterType(){
-    let status = document.getElementById("type").value;
-    status = status.toUpperCase();
-    let table = document.getElementById("reimbTable");
-    let rows = table.getElementsByTagName("tr");
-    for (i=1; i < rows.length;i++){
-        rows[i].style.display = "none";
-        let style = rows[i].style.display;
-        let statusData = rows[i].getElementsByTagName("td")[6];
-        if (status == '--'){
-            rows[i].style.display = "";
-        }else if (statusData.innerHTML ==  status){
-            rows[i].style.display = "";
+        if(type != typeData && type != '--'){
+            rows[i].style.display = "none";
+        }
+        if(!(subData.indexOf(submitted) > -1)){
+            rows[i].style.display = "none";
+        }
+        if(!(resData.indexOf(resolved) > -1)){
+            rows[i].style.display = "none";
         }
     }
 }
-
-function filterSubmitted(){
-    let submitted = document.getElementById("submitted").value;
-    submitted = submitted.toUpperCase();
-    let table = document.getElementById("reimbTable");
-    let rows = table.getElementsByTagName("tr");
-    for (i=1; i < rows.length;i++){
-        rows[i].style.display = "none";
-        let style = rows[i].style.display;
-        let subData = rows[i].getElementsByTagName("td")[0];
-        if (subData.innerHTML.toUpperCase().indexOf(submitted) > -1){
-            rows[i].style.display = "";
-        }
-    }
-}
-
-function filterResolved(){
-    let resolved = document.getElementById("resolved").value;
-    resolved = resolved.toUpperCase();
-    let table = document.getElementById("reimbTable");
-    let rows = table.getElementsByTagName("tr");
-    for (i=1; i < rows.length;i++){
-        rows[i].style.display = "none";
-        let style = rows[i].style.display;
-        let resData = rows[i].getElementsByTagName("td")[4];
-        if (resData.innerHTML.toUpperCase().indexOf(resolved) > -1){
-            rows[i].style.display = "";
-        }
-    }
-}
-
-
-getReimbs();
