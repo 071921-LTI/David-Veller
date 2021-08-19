@@ -97,7 +97,7 @@ function getReimb() {
             if (response.receipt != null) {
                 let image = document.createElement('img');
                 //console.log(response.receipt);
-                image.src = 'data:image/jpeg;base64,' + fromUTF8Array(response.receipt);
+                image.src = 'data:image/jpeg;base64,' + btoa(response.receipt);
                 receipt.appendChild(image);
             }else{
                 receipt.innerHTML = "No recept attached";

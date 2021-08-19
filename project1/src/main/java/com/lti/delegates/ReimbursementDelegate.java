@@ -2,7 +2,9 @@ package com.lti.delegates;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.lti.models.Reimb;
 import com.lti.models.ReimbStatus;
 import com.lti.models.User;
@@ -158,7 +161,10 @@ public class ReimbursementDelegate implements Delegatable {
 				if (pathNext.equals("request")) {
 					
 					InputStream request = req.getInputStream();
-					Reimb reimb = new ObjectMapper().readValue(request, Reimb.class);
+					//Reimb reimb = new ObjectMapper().readValue(request, Reimb.class);
+					Reader reader = new InputStreamReader(request);
+					Reimb reimb = new Gson().fromJson(reader, Reimb.class);
+					
 					
 					ReimbStatus status = new ReimbStatus(1, "pending");
 					

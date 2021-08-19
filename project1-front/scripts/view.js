@@ -9,6 +9,9 @@ document.getElementById("type").addEventListener('change', filterAll);
 document.getElementById("submitted").addEventListener('keyup', filterAll);
 document.getElementById("resolved").addEventListener('keyup', filterAll);
 document.getElementById("viewempl").addEventListener('click', openEmployees);
+document.getElementById("tres").addEventListener('click', sortTimeRes);
+document.getElementById("tsub").addEventListener('click', sortTimeSub);
+document.getElementById("amt").addEventListener('click', sortAmount);
 
 checkManager();
 getReimbs();
@@ -19,6 +22,147 @@ function checkManager() {
         document.getElementById("viewempl").style.display = "";
     }
 
+}
+
+function sortAmount(){
+    let table = document.getElementById("reimbTable");
+    dir = "asc";
+    switching = true;
+    let shouldSwitch;
+    let switchCount = 0;
+
+
+    while(switching){
+        switching = false;
+        let rows = table.getElementsByTagName("tr");
+        
+        for (i = 1; i < (rows.length-1); i++){
+            shouldSwitch = false;
+            amt1 = rows[i].getElementsByTagName("td")[1].innerHTML;
+            amt2 = rows[i+1].getElementsByTagName("td")[1].innerHTML;
+            if (dir == 'asc'){
+                if (Number(amt1) > Number(amt2)){
+                    shouldSwitch = true;
+                    break;
+                }
+            }else if (dir == 'desc'){
+                if (Number(amt1) < Number(amt2)){
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+        }
+
+        if (shouldSwitch){
+            rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+            switching = true;
+            switchCount++;
+        }else{
+            if (switchCount == 0 && dir=="asc"){
+                dir = "desc";
+                switching = true;
+            }
+        }
+    }
+    if (dir == "asc"){
+        document.getElementById("amt").innerHTML = "Amount ↑"
+    }else if (dir == "desc"){
+        document.getElementById("amt").innerHTML = "Amount ↓"
+    }
+}
+
+function sortTimeSub(){
+    let table = document.getElementById("reimbTable");
+    dir = "asc";
+    switching = true;
+    let shouldSwitch;
+    let switchCount = 0;
+
+
+    while(switching){
+        switching = false;
+        let rows = table.getElementsByTagName("tr");
+        
+        for (i = 1; i < (rows.length-1); i++){
+            shouldSwitch = false;
+            time1 = rows[i].getElementsByTagName("td")[2].innerHTML;
+            time2 = rows[i+1].getElementsByTagName("td")[2].innerHTML;
+            if (dir == 'asc'){
+                if (time1 > time2){
+                    shouldSwitch = true;
+                    break;
+                }
+            }else if (dir == 'desc'){
+                if (time1 < time2){
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+        }
+
+        if (shouldSwitch){
+            rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+            switching = true;
+            switchCount++;
+        }else{
+            if (switchCount == 0 && dir=="asc"){
+                dir = "desc";
+                switching = true;
+            }
+        }
+    }
+    if (dir == "asc"){
+        document.getElementById("tsub").innerHTML = "Time Submitted ↑"
+    }else if (dir == "desc"){
+        document.getElementById("tsub").innerHTML = "Time Submitted ↓"
+    }
+}
+
+function sortTimeRes(){
+    let table = document.getElementById("reimbTable");
+    dir = "asc";
+    switching = true;
+    let shouldSwitch;
+    let switchCount = 0;
+
+
+    while(switching){
+        switching = false;
+        let rows = table.getElementsByTagName("tr");
+        
+        for (i = 1; i < (rows.length-1); i++){
+            shouldSwitch = false;
+            time1 = rows[i].getElementsByTagName("td")[3].innerHTML;
+            time2 = rows[i+1].getElementsByTagName("td")[3].innerHTML;
+            if (dir == 'asc'){
+                if (time1 > time2){
+                    shouldSwitch = true;
+                    break;
+                }
+            }else if (dir == 'desc'){
+                if (time1 < time2){
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+        }
+
+        if (shouldSwitch){
+            rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+            switching = true;
+            switchCount++;
+        }else{
+            if (switchCount == 0 && dir=="asc"){
+                dir = "desc";
+                switching = true;
+            }
+        }
+    }
+    if (dir == "asc"){
+        document.getElementById("tres").innerHTML = "Time Resolved ↑"
+    }else if (dir == "desc"){
+        document.getElementById("tres").innerHTML = "Time Resolved ↓"
+    }
 }
 
 function getReimbs() {

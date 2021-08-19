@@ -2,6 +2,12 @@
     background: rgb(201, 201, 201);
     cursor: pointer
  }
+
+ .sort:hover{
+   background: rgb(168, 150, 235);
+   cursor: pointer
+ }
+
  td a { 
     display: block; 
     border: 1px solid black;
